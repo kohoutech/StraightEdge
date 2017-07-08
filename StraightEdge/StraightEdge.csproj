@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{852FC971-0548-482F-931C-24429E7C88FC}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>StraightEdge</RootNamespace>
+    <AssemblyName>StraightEdge</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>SEIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SEWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SEWindow.Designer.cs">
+      <DependentUpon>SEWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Shapes\SECurve.cs" />
+    <Compile Include="Shapes\SEIllustration.cs" />
+    <Compile Include="Shapes\SEEllipse.cs" />
+    <Compile Include="Shapes\SEHandle.cs" />
+    <Compile Include="Shapes\SEImage.cs" />
+    <Compile Include="Shapes\SELine.cs" />
+    <Compile Include="Shapes\SEPath.cs" />
+    <Compile Include="Shapes\SEPolygon.cs" />
+    <Compile Include="Shapes\SERectangle.cs" />
+    <Compile Include="Shapes\SEShape.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shapes\SEText.cs" />
+    <Compile Include="Tools\EllipseTool.cs" />
+    <Compile Include="Tools\CurveTool.cs" />
+    <Compile Include="Tools\ImageTool.cs" />
+    <Compile Include="Tools\LineTool.cs" />
+    <Compile Include="Tools\PathTool.cs" />
+    <Compile Include="Tools\PointerTool.cs" />
+    <Compile Include="Tools\PolygonTool.cs" />
+    <Compile Include="Tools\RectangleTool.cs" />
+    <Compile Include="Tools\SETool.cs" />
+    <Compile Include="Tools\TextTool.cs" />
+    <Compile Include="UI\SEControlPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SEStatusPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\ControlStrip.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\SEPalette.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SEToolBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\SECanvas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\ColorDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <EmbeddedResource Include="SEWindow.resx">
+      <DependentUpon>SEWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\SECanvas.resx">
+      <DependentUpon>SECanvas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SEControlPanel.resx">
+      <DependentUpon>SEControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SEStatusPanel.resx">
+      <DependentUpon>SEStatusPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\ControlStrip.resx">
+      <DependentUpon>ControlStrip.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Widgets\SEPalette.resx">
+      <DependentUpon>SEPalette.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\SEToolBox.resx">
+      <DependentUpon>SEToolBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SEIcon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
