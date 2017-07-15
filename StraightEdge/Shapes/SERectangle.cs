@@ -35,16 +35,6 @@ namespace StraightEdge.Shapes
         public SEHandle rightHandle;
         public SEHandle bottomHandle;
 
-        public SERectangle()
-            : base()
-        {
-            rect = new RectangleF(0, 0, 0, 0);
-            leftHandle = null;
-            topHandle = null;
-            rightHandle = null;
-            bottomHandle = null;
-        }
-
         public SERectangle(int idNum, float xpos, float ypos)
             : base(idNum, xpos, ypos)
         {
