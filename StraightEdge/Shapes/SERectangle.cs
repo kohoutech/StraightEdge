@@ -28,90 +28,73 @@ namespace StraightEdge.Shapes
 {
     public class SERectangle : SEShape
     {
-        public RectangleF rect;
+        float width;
+        float height;
 
-        public SEHandle leftHandle;
-        public SEHandle topHandle;
-        public SEHandle rightHandle;
-        public SEHandle bottomHandle;
-
-        public SERectangle(int idNum, float xpos, float ypos)
-            : base(idNum, xpos, ypos)
+        public SERectangle(SEShape parent)
+            : base(parent)
         {
-            rect = new RectangleF(xpos, ypos, 0, 0);
-            leftHandle = new SEHandle(xpos,ypos);
-            topHandle = new SEHandle(xpos,ypos);
-            rightHandle = new SEHandle(xpos,ypos);
-            bottomHandle = new SEHandle(xpos,ypos);
             xmlShapeName = "rectangle";
         }
 
         public override void setPos(float xOfs, float yOfs)
         {
-            rect.Location = new PointF(xOfs, yOfs);
-            xpos = rect.X;
-            ypos = rect.Y;
-            leftHandle.setPos(xpos, ypos + rect.Height / 2);
-            topHandle.setPos(xpos + rect.Width / 2, yOfs);
-            rightHandle.setPos(xpos + rect.Width, ypos + rect.Height / 2);
-            bottomHandle.setPos(xpos + rect.Width / 2, ypos + rect.Height);
             //tool.updateControlStrip();
         }
 
         public override void move(float xOfs, float yOfs)
         {
-            rect.Offset(xOfs, yOfs);
-            xpos = rect.X;
-            ypos = rect.Y;
-            leftHandle.move(xOfs, yOfs);
-            topHandle.move(xOfs, yOfs);
-            rightHandle.move(xOfs, yOfs);
-            bottomHandle.move(xOfs, yOfs);
-            tool.updateControlStrip();
+            //tool.updateControlStrip();
         }
 
-        public void setWidth(float width) 
+        public void setWidth(float _width) 
         {
-            rect.Width = width;
-            topHandle.setXPos(xpos + width / 2);
-            rightHandle.setXPos(xpos + width);
-            bottomHandle.setXPos(xpos + width / 2);
+            width = _width;
+            update();
         }
 
-        public void setHeight(float height)
+        public void setHeight(float _height)
         {
-            rect.Height = height;
-            leftHandle.setYPos(ypos + height / 2);
-            bottomHandle.setYPos(ypos + height);
-            rightHandle.setYPos(ypos + height / 2);
+            height = _height;
+            update();
+        }
+
+        public void update()
+        {
+            path.Reset();
+            path.AddLine(xpos, ypos, xpos + width, ypos);
+            path.AddLine(xpos + width, ypos, xpos + width, ypos + height);
+            path.AddLine(xpos + width, ypos + height, xpos, ypos + height);
+            path.CloseFigure();
         }
 
         public override bool hitTest(int xpos, int ypos)
         {
-            return rect.Contains(xpos, ypos);
+            return false;
         }
 
-        public override void render(Graphics g)
+//- loading /saving -----------------------------------------------------------
+
+        public override SEShape loadShape(XmlNode node, SEShape parent)
         {
-            pen = new Pen(penColor,penWidth);
-            int alpha = (int)(255 * brushOpacity);
-            brush = new SolidBrush(Color.FromArgb(alpha,brushColor));
-            g.DrawRectangle(pen, rect.X, rect.Y, rect.Width, rect.Height);
-            g.FillRectangle(brush, rect);
-            if (selected)
-            {
-                leftHandle.render(g);
-                topHandle.render(g);
-                rightHandle.render(g);
-                bottomHandle.render(g);
-            }
+            SERectangle rect = new SERectangle(parent);
+            rect.loadAttributes(node);
+            return rect;
+        }
+
+        public override void loadAttributes(XmlNode node) 
+        {
+            base.loadAttributes(node);
+            width = (float)Convert.ToDouble(node.Attributes["width"].Value);
+            height = (float)Convert.ToDouble(node.Attributes["height"].Value);
+            update();
         }
 
         public override void save(XmlWriter xmlWriter)
         {
             base.save(xmlWriter);
-            xmlWriter.WriteAttributeString("width", rect.Width.ToString());
-            xmlWriter.WriteAttributeString("height", rect.Height.ToString());
+            xmlWriter.WriteAttributeString("width", width.ToString());
+            xmlWriter.WriteAttributeString("height", height.ToString());
         }
     }
 }

@@ -41,7 +41,7 @@ namespace StraightEdge
         public SEStatusPanel statusPanel;
         public ToolTip SEToolTip;
 
-        public SEIllustration currentIllo;
+        public SEDocument currentDoc;
 
         public SEWindow()
         {
@@ -65,79 +65,76 @@ namespace StraightEdge
 
             InitializeComponent();
 
-            SEIllustration initIll = new SEIllustration(this);      //start with a new blank illustration
-            setCurrentIllo(initIll);
-            Text = "StraightEdge [Illustration1]";
+            SEGraphic.registerShapes();
+
+            SEDocument initDoc = new SEDocument(this, "untitled");      //start with a new blank graphic
+            setCurrentDocument(initDoc);
         }
 
-        public void setCurrentIllo(SEIllustration ill)
+        public void setCurrentDocument(SEDocument doc)
         {
-            currentIllo = ill;
-            canvas.setIllustration(ill);                
-        }
-
-        public void setCurrentTool(SETool tool) 
-        {
-            canvas.currentTool = tool;
+            currentDoc = doc;
+            canvas.setGraphic(doc.graph);
+            Text = "StraightEdge [" + doc.fileName + "]";
         }
 
 //-----------------------------------------------------------------------------
 
         private void newFileMenuItem_Click(object sender, EventArgs e)
         {
-            SEIllustration newIllo = new SEIllustration(this);      //load a new blank illustration
-            setCurrentIllo(newIllo);
+            SEDocument newDoc = new SEDocument(this, "untitled");      //load a new blank graphic
+            setCurrentDocument(newDoc);
         }
 
         private void openFileMenuItem_Click(object sender, EventArgs e)
         {
-            //call get new illustration filename dialog box
+            //call get new graphic filename dialog box
             String filename = "";
             SEOpenFileDialog.InitialDirectory = Application.StartupPath;
-            SEOpenFileDialog.DefaultExt = "*.se1";
-            SEOpenFileDialog.Filter = "StraightEdge illustrations|*.sei|All files|*.*";
+            SEOpenFileDialog.DefaultExt = "*.rul";
+            SEOpenFileDialog.Filter = "StraightEdge Illustration|*.rul|All files|*.*";
             SEOpenFileDialog.ShowDialog();
             filename = SEOpenFileDialog.FileName;
-            if (filename.Length == 0) return;
-
-            SEIllustration illo = SEIllustration.loadFile(this, filename);
-            setCurrentIllo(illo);
-            Text = "StraightEdge [" + filename + "]";
+            if (filename.Length != 0)
+            {
+                SEDocument doc = SEDocument.loadFile(this, filename);
+                setCurrentDocument(doc);
+            }
         }
 
-        public void saveIllustration(bool newName)
+        public void saveDocument(bool newName)
         {
             String filename = "";
-            if (newName || (SEIllustration.curFileName == null))
+            if (newName || (currentDoc.fileName == null))
             {
                 //call get save project filename dialog box
                 SESaveFileDialog.InitialDirectory = Application.StartupPath;
-                SESaveFileDialog.DefaultExt = "*.se1";
-                SESaveFileDialog.Filter = "StraightEdge illustrations|*.sei|All files|*.*";
+                SESaveFileDialog.DefaultExt = "*.rul";
+                SESaveFileDialog.Filter = "StraightEdge Illustration|*.rul|All files|*.*";
                 SESaveFileDialog.ShowDialog();
                 filename = SESaveFileDialog.FileName;
                 if (filename.Length == 0) return;
 
-                currentIllo.saveAs(filename);
+                currentDoc.saveAs(filename);
             }
             else
             {
-                currentIllo.save();
+                currentDoc.save();
             }
 
-            String msg = "Illustration has been saved as " + filename;
+            String msg = "Graphic has been saved as " + filename;
             MessageBox.Show(msg, "Save complete");
             Text = "StraightEdge [" + filename + "]";
         }
 
         private void saveFileMenuItem_Click(object sender, EventArgs e)
         {
-            saveIllustration(false);
+            saveDocument(false);
         }
 
         private void saveAsFileMenuItem_Click(object sender, EventArgs e)
         {
-            saveIllustration(true);
+            saveDocument(true);
         }
 
         private void exitFileMenuItem_Click(object sender, EventArgs e)
@@ -187,7 +184,7 @@ namespace StraightEdge
 
         private void aboutHelpMenuItem_Click(object sender, EventArgs e)
         {
-            String msg = "StraightEdge\nversion 0.1.0\n" + "\xA9 Topographics Software 1998-2017\n" + "http://topographics.kohoutech.com";
+            String msg = "StraightEdge\nversion 0.2.0\n" + "\xA9 Topographics Software 1998-2017\n" + "http://topographics.kohoutech.com";
             MessageBox.Show(msg, "About");
         }
 

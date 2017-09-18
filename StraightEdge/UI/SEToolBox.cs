@@ -53,8 +53,8 @@ namespace StraightEdge.UI
             tools.Add(pointerTool);
             RectangleTool rectTool = new RectangleTool(window);
             tools.Add(rectTool);
-            EllipseTool ellipseTool = new EllipseTool(window);
-            tools.Add(ellipseTool);
+            //EllipseTool ellipseTool = new EllipseTool(window);
+            //tools.Add(ellipseTool);
             PolygonTool polygonTool = new PolygonTool(window);
             tools.Add(polygonTool);
             TextTool textTool = new TextTool(window);
@@ -110,14 +110,7 @@ namespace StraightEdge.UI
             toolButton.FlatAppearance.BorderColor = Color.Red;
             toolButton.FlatAppearance.BorderSize = 2;
             currentButton = toolButton;
-            window.setCurrentTool((SETool)toolButton.Tag);
+            window.canvas.setCurrentTool((SETool)toolButton.Tag);
         }
-
-        //protected override void OnPaint(PaintEventArgs e)
-        //{
-        //    base.OnPaint(e);
-        //    Graphics g = e.Graphics;
-        //    g.SmoothingMode = SmoothingMode.AntiAlias;
-        //}
     }
 }

@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Xml;
 
 using StraightEdge;
@@ -28,65 +30,51 @@ using StraightEdge.Tools;
 
 namespace StraightEdge.Shapes
 {
-    public class SEIllustration
+    public class SEGraphic : SEShape
     {
         public SEWindow window;
+        public SEDocument doc;
         public List<SEShape> shapes;
 
-        public static String curFileName;
-
-        public static Dictionary<String, SETool> tools = new Dictionary<string,SETool>();
-
-        public static void registerShapeTool(String shapename, SETool tool)
+        public static void registerShapes()
         {
-            tools.Add(shapename, tool);
-        }
-
-        public static SETool getShapeTool(String shapeName)
-        {
-            return tools[shapeName];
-        }
-
-        public static SEIllustration loadFile(SEWindow _window, String illoFileName) 
-        {
-            curFileName = illoFileName;
-            SEIllustration illo = new SEIllustration(_window);
-
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(illoFileName);
-            foreach (XmlNode shapeNode in xmlDoc.DocumentElement.ChildNodes)
-            {
-                SETool shapeTool = getShapeTool(shapeNode.Name);
-                shapeTool.loadShape(shapeNode, illo);
-            }
-
-            return illo;
+            SEShape.registerShape("rectangle", new SERectangle(null));
         }
 
 //-----------------------------------------------------------------------------
 
-        public SEIllustration()
+        public SEGraphic() : base(null)
         {
             window = null;
             shapes = new List<SEShape>();
         }
 
-        public SEIllustration(SEWindow _window)
+        public override void render(Graphics g)
         {
-            window = _window;
-            shapes = new List<SEShape>();
+            foreach (SEShape shape in shapes)           //shapes are stored in order bottom to top
+            {
+                shape.render(g);
+            }
         }
 
-        public void save()
+//-----------------------------------------------------------------------------
+
+        public override SEShape loadShape(XmlNode shapeRoot, SEShape parent)
         {
-            var settings = new XmlWriterSettings();
-            settings.OmitXmlDeclaration = true;
-            settings.Indent = true;
-            settings.NewLineOnAttributes = true;
+            foreach (XmlNode shapenode in shapeRoot.ChildNodes)
+            {
+                SEShape loader = SEShape.getShapeLoader(shapenode.Name);
+                if (loader != null)
+                {
+                    SEShape shape = loader.loadShape(shapenode, this);
+                    shapes.Add(shape);
+                }
+            }
+            return this;
+        }
 
-            XmlWriter xmlWriter = XmlWriter.Create(curFileName, settings);
-
-            xmlWriter.WriteStartDocument();
+        public override void save(XmlWriter xmlWriter)
+        {
             xmlWriter.WriteStartElement("shapes");
 
             foreach (SEShape shape in shapes)
@@ -97,14 +85,6 @@ namespace StraightEdge.Shapes
             }
 
             xmlWriter.WriteEndElement();
-            xmlWriter.WriteEndDocument();
-            xmlWriter.Close();
-        }
-
-        public void saveAs(String filename)
-        {
-            curFileName = filename;
-            save();
         }
     }
 }

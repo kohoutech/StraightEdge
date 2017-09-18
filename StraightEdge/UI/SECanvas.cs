@@ -33,7 +33,7 @@ namespace StraightEdge.UI
     public class SECanvas : UserControl
     {
         public SEWindow window;
-        public SEIllustration currentIllo;
+        public SEGraphic graphic;
 
         public SEShape selectedShape;
         public SETool currentTool;
@@ -46,7 +46,7 @@ namespace StraightEdge.UI
 
             InitializeComponent();
 
-            setIllustration(null);
+            setGraphic(null);
         }
 
         private void InitializeComponent()
@@ -60,23 +60,28 @@ namespace StraightEdge.UI
             this.ResumeLayout(false);
         }
 
-        public void setIllustration(SEIllustration illo)
+        public void setGraphic(SEGraphic graph)
         {
-            currentIllo = illo;
+            graphic = graph;
             selectedShape = null;
             currentTool = null;
             isDragging = false;
             Invalidate();
         }
 
+        public void setCurrentTool(SETool tool)
+        {
+            currentTool = tool;
+        }
+
         public SEShape hitTest(int xpos, int ypos)
         {
             SEShape result = null;
-            for (int i = currentIllo.shapes.Count - 1; i >= 0; i--)     //reverse through shapes list to hit topmost first, bottommost last
+            for (int i = graphic.shapes.Count - 1; i >= 0; i--)     //reverse through shapes list to hit topmost first, bottommost last
             {
-                if (currentIllo.shapes[i].hitTest(xpos, ypos))
+                if (graphic.shapes[i].hitTest(xpos, ypos))
                 {
-                    result = currentIllo.shapes[i];
+                    result = graphic.shapes[i];
                     break;
                 }
             }
@@ -87,12 +92,12 @@ namespace StraightEdge.UI
         {
             if (selectedShape != null)
             {
-                selectedShape.selected = false;      //deselect any prev shape
+                //selectedShape.selected = false;      //deselect any prev shape
             }
             selectedShape = shape;                //select current shape (or no selection)
             if (shape != null)
             {
-                shape.selected = true;                                      //let shape know its selected
+                //shape.selected = true;                                      //let shape know its selected
                 window.controlPanel.setControlStrip(shape.tool.strip);      //set control panel to shape's type's controls
                 shape.tool.setCurrentShape(shape);                          //and link control strip to THIS shape
 
@@ -160,7 +165,7 @@ namespace StraightEdge.UI
             {
                 if (selectedShape != null)
                 {
-                    currentIllo.shapes.Remove(selectedShape);
+                    graphic.shapes.Remove(selectedShape);
                 }
             }
             Invalidate();
@@ -173,11 +178,7 @@ namespace StraightEdge.UI
             base.OnPaint(e);
             Graphics g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
-
-            foreach (SEShape shape in currentIllo.shapes)           //shapes are stored in order bottom to top
-            {
-                shape.render(g);
-            }
+            graphic.render(g);
         }
     }
 }

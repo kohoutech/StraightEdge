@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SEDocument.cs" />
     <Compile Include="SEWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -56,8 +57,9 @@
       <DependentUpon>SEWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Shapes\SECurve.cs" />
-    <Compile Include="Shapes\SEIllustration.cs" />
+    <Compile Include="Shapes\SEGraphic.cs" />
     <Compile Include="Shapes\SEEllipse.cs" />
+    <Compile Include="Shapes\SEGroup.cs" />
     <Compile Include="Shapes\SEHandle.cs" />
     <Compile Include="Shapes\SEImage.cs" />
     <Compile Include="Shapes\SELine.cs" />
@@ -141,6 +143,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SEIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dialogs\" />
+    <Folder Include="Filters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

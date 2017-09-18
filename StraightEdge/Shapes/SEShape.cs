@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Xml;
 
 using StraightEdge.UI;
@@ -31,12 +32,13 @@ namespace StraightEdge.Shapes
 {
     public class SEShape
     {
-        public String id;
-        public bool selected;           //if shape is current selection on canvas
 
+        public SEShape parent;
         public SETool tool;             //tool used to create/modify this shape
-
         public String xmlShapeName;
+        public String id;
+
+        public GraphicsPath path;
 
         //pos
         public float xpos;
@@ -44,36 +46,33 @@ namespace StraightEdge.Shapes
 
         //rendering
         public Pen pen;
-        public Color penColor;
-        public float penWidth;
-
         public Brush brush;
-        public Color brushColor;
-        public float brushOpacity;
 
-        public SEShape()
+//- shape registry -------------------------------------------------------------
+
+        public static Dictionary<String, SEShape> loaders = new Dictionary<string, SEShape>();
+
+        public static void registerShape(String shapename, SEShape shape)
         {
-            id = "id" + 0;
-            selected = false;
-            xpos = 0.0f;
-            ypos = 0.0f;
-            penColor = Color.Black;
-            penWidth = 1.0f;
-            brushColor = Color.White;
-            brushOpacity = 100.0f;
+            loaders.Add(shapename, shape);
         }
 
-
-        public SEShape(int idNum, float _x, float _y)
+        public static SEShape getShapeLoader(String shapeName)
         {
-            id = "id" + idNum;
-            selected = false;
-            xpos = _x;
-            ypos = _y;
-            penColor = Color.Black;
-            penWidth = 1.0f;
-            brushColor = Color.White;
-            brushOpacity = 100.0f;
+            return loaders[shapeName];
+        }
+
+//-----------------------------------------------------------------------------
+
+        public SEShape(SEShape _parent)
+        {
+            parent = _parent;
+            id = "id" + 0;
+            path = new GraphicsPath(FillMode.Alternate);
+            xpos = 0.0f;
+            ypos = 0.0f;
+            pen = Pens.Black;
+            brush = Brushes.White;
             xmlShapeName = "shape";
         }
 
@@ -83,15 +82,59 @@ namespace StraightEdge.Shapes
         }
 
         public virtual void setPos(float xOfs, float yOfs)
-        {
+        {            
         }
 
         public virtual void move(float xOfs, float yOfs)
-        {            
+        {
         }
 
         public virtual void render(Graphics g)
         {
+            g.FillPath(brush, path);
+            g.DrawPath(pen, path);
+        }
+
+//- loading /saving -----------------------------------------------------------
+
+        public Color colorFromXML(String argb)
+        {
+            int a = Convert.ToInt32(argb.Substring(0,2), 16);
+            int r = Convert.ToInt32(argb.Substring(2, 2), 16);
+            int g = Convert.ToInt32(argb.Substring(4, 2), 16);
+            int b = Convert.ToInt32(argb.Substring(6, 2), 16);
+            return Color.FromArgb(a,r,g,b);
+        }
+
+        public virtual SEShape loadShape(XmlNode node, SEShape parent)
+        {
+            return null;
+        }
+
+        public void loadBrush(XmlNode node)
+        {
+            Color brushColor = colorFromXML(node.Attributes["brushcolor"].Value);       //only use solid brushes for now
+            brush = new SolidBrush(brushColor);
+        }
+
+        public virtual void loadAttributes(XmlNode node) 
+        {
+            id = node.Attributes["id"].Value;
+            xpos = (float)Convert.ToDouble(node.Attributes["xpos"].Value);
+            ypos = (float)Convert.ToDouble(node.Attributes["ypos"].Value);
+            Color penColor = colorFromXML(node.Attributes["pencolor"].Value);
+            float penwidth = (float)Convert.ToDouble(node.Attributes["penwidth"].Value);
+            pen = new Pen(penColor, penwidth);
+            loadBrush(node);
+        }
+
+        public void saveBrush(XmlWriter xmlWriter)
+        {
+            if (brush is SolidBrush)
+            {
+                SolidBrush sb = (SolidBrush)brush;
+                xmlWriter.WriteAttributeString("brushcolor", sb.Color.ToArgb().ToString("x8"));
+            }
         }
 
         public virtual void save(XmlWriter xmlWriter)
@@ -99,10 +142,9 @@ namespace StraightEdge.Shapes
             xmlWriter.WriteAttributeString("id", id);
             xmlWriter.WriteAttributeString("xpos", xpos.ToString());
             xmlWriter.WriteAttributeString("ypos", ypos.ToString());
-            xmlWriter.WriteAttributeString("pencolor", penColor.ToArgb().ToString("x8"));
-            xmlWriter.WriteAttributeString("penwidth", penWidth.ToString());
-            xmlWriter.WriteAttributeString("brushcolor", brushColor.ToArgb().ToString("x8"));
-            xmlWriter.WriteAttributeString("brushopacity", brushOpacity.ToString());
+            xmlWriter.WriteAttributeString("pencolor", pen.Color.ToArgb().ToString("x8"));
+            xmlWriter.WriteAttributeString("penwidth", pen.Width.ToString());
+            saveBrush(xmlWriter);
         }
     }
 }

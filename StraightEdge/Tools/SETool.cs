@@ -39,8 +39,24 @@ namespace StraightEdge.Tools
         public String buttonText;
         public String tooltip;
 
-        //controlpanel
+        //control panel
         public ControlStrip strip;
+
+//- tool registry -------------------------------------------------------------
+
+        public static Dictionary<String, SETool> tools = new Dictionary<string, SETool>();
+
+        public static void registerShapeTool(String shapename, SETool tool)
+        {
+            tools.Add(shapename, tool);
+        }
+
+        public static SETool getShapeTool(String shapeName)
+        {
+            return tools[shapeName];
+        }
+
+//-----------------------------------------------------------------------------
 
         public SETool(SEWindow _window)
         {
@@ -51,10 +67,6 @@ namespace StraightEdge.Tools
             strip = new ControlStrip();
         }
 
-        public virtual void loadShape(XmlNode shapeNode, SEIllustration illo)
-        {
-        }
-
         public virtual void setCurrentShape(SEShape shape) 
         {
         }
@@ -62,6 +74,8 @@ namespace StraightEdge.Tools
         public virtual void updateControlStrip()
         {
         }
+
+//- event handlers ------------------------------------------------------------
 
         public virtual void mouseDown(MouseEventArgs e)
         {
