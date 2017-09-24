@@ -56,8 +56,8 @@ namespace StraightEdge.Tools
 
             currentRect = null;
 
-            buttonText = "Rect";
-            tooltip = "Rectangle";
+            buttonIcon = "toolboxrect";
+            tooltip = "draw squares and rectangles";
 
             //buildControlStrip();
             //updatingStrip = false;

@@ -30,7 +30,7 @@ using StraightEdge.UI;
 
 namespace StraightEdge.Tools
 {
-    class EllipseTool //: SETool
+    class EllipseTool : SETool
     {
 //        SEEllipse currentEllipse;
 //        int orgX;
@@ -45,23 +45,23 @@ namespace StraightEdge.Tools
 
 //        static bool registered = false;
 
-//        public EllipseTool(SEWindow window)
-//            : base(window)
-//        {
-//            if (!registered)
-//            {
-//                SEGraphic.registerShapeTool("ellipse", this);
-//                registered = true;
-//            }
+        public EllipseTool(SEWindow window)
+            : base(window)
+        {
+            //            if (!registered)
+            //            {
+            //                SEGraphic.registerShapeTool("ellipse", this);
+            //                registered = true;
+//        }
 
 //            currentEllipse = null;
 
-//            buttonText = "Oval";
-//            tooltip = "Ellipse";
+            buttonIcon = "toolboxellipse";
+            tooltip = "draw circles and ellipses";
 
 //            buildControlStrip();
 //            updatingStrip = false;
-//        }
+        }
 
 //        public override void setCurrentShape(SEShape shape)
 //        {

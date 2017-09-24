@@ -32,8 +32,8 @@ namespace StraightEdge.Tools
         public PathTool(SEWindow window)
             : base(window)
         {
-            buttonText = "Path";
-            tooltip = "Path";
+            buttonIcon = "toolboxpath";
+            tooltip = "draw connected paths";
         }
 
     }

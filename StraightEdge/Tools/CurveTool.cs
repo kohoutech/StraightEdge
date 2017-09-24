@@ -32,8 +32,8 @@ namespace StraightEdge.Tools
         public CurveTool(SEWindow window)
             : base(window)
         {
-            buttonText = "Curv";
-            tooltip = "Curve";
+            buttonIcon = "toolboxcurve";
+            tooltip = "draw curves and arcs";
         }
 
     }

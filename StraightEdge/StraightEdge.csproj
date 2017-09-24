@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>SEIcon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\SEIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -83,6 +83,9 @@
     <Compile Include="UI\SEControlPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="UI\SEEasel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="UI\SEStatusPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -101,6 +104,9 @@
     <Compile Include="Widgets\ColorDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Widgets\SERuler.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <EmbeddedResource Include="SEWindow.resx">
       <DependentUpon>SEWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -112,6 +118,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="UI\SECanvas.resx">
       <DependentUpon>SECanvas.cs</DependentUpon>
@@ -142,7 +149,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SEIcon.ico" />
+    <Content Include="Resources\SEIcon.ico" />
+    <None Include="Resources\toolboxtext.png" />
+    <None Include="Resources\toolboxrect.png" />
+    <None Include="Resources\toolboxpolygon.png" />
+    <None Include="Resources\toolboxpointer.png" />
+    <None Include="Resources\toolboxpath.png" />
+    <None Include="Resources\toolboxline.png" />
+    <None Include="Resources\toolboximage.png" />
+    <None Include="Resources\toolboxellipse.png" />
+    <None Include="Resources\toolboxcurve.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Dialogs\" />

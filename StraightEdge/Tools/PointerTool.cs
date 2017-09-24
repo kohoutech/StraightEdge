@@ -36,8 +36,8 @@ namespace StraightEdge.Tools
         public PointerTool(SEWindow window)
             : base(window)
         {
-            buttonText = "Ptr";
-            tooltip = "Pointer";
+            buttonIcon = "toolboxpointer";
+            tooltip = "select and group elements";
             orgX = 0;
             orgY = 0;
         }

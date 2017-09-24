@@ -31,49 +31,45 @@ namespace StraightEdge.UI
 {
     public class SEToolBox : UserControl
     {
-        const int BUTTONSIZE = 42;
+        const int BUTTONSIZE = 32;
 
         public SEWindow window;
         public SECanvas canvas;
 
-        List<SETool> tools;
+        List<SETool> tools;         //tools in the toolbox
 
         Button currentButton;
-        Rectangle selectedRect;
 
         public SEToolBox(SEWindow _window)        
         {
-            InitializeComponent();
             window = _window;
-            canvas = window.canvas;
+            canvas = window.easel.canvas;
+            InitializeComponent();
+            //this.BackColor = Color.LightSteelBlue;
+            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 
+            //add tools to the toolbox
             tools = new List<SETool>();
 
-            PointerTool pointerTool = new PointerTool(window);
-            tools.Add(pointerTool);
-            RectangleTool rectTool = new RectangleTool(window);
-            tools.Add(rectTool);
-            //EllipseTool ellipseTool = new EllipseTool(window);
-            //tools.Add(ellipseTool);
-            PolygonTool polygonTool = new PolygonTool(window);
-            tools.Add(polygonTool);
-            TextTool textTool = new TextTool(window);
-            tools.Add(textTool);
-            LineTool lineTool = new LineTool(window);
-            tools.Add(lineTool);
-            PathTool pathTool = new PathTool(window);
-            tools.Add(pathTool);
-            CurveTool curveTool = new CurveTool(window);
-            tools.Add(curveTool);
-            ImageTool imageTool = new ImageTool(window);
-            tools.Add(imageTool);
+            tools.Add(new PointerTool(window));
+            tools.Add(new RectangleTool(window));
+            tools.Add(new EllipseTool(window));
+            tools.Add(new PolygonTool(window));
+            tools.Add(new LineTool(window));
+            tools.Add(new PathTool(window));
+            tools.Add(new CurveTool(window));
+            tools.Add(new TextTool(window));
+            tools.Add(new ImageTool(window));
 
-            int ypos = 0;
+            //build toolbox buttons
+            int ypos = 4;
             foreach (SETool tool in tools)
             {
                 Button toolButton = new Button();
-                toolButton.Text = tool.buttonText;
+                toolButton.Image = (Image)Properties.Resources.ResourceManager.GetObject(tool.buttonIcon);
                 toolButton.Size = new Size(BUTTONSIZE, BUTTONSIZE);
+                toolButton.Padding = new Padding(0, 0, 1, 1);
+                toolButton.BackColor = Color.White;
                 toolButton.Location = new Point(2, ypos);
                 toolButton.FlatStyle = FlatStyle.Flat;
                 toolButton.FlatAppearance.BorderColor = Color.Black;
@@ -82,9 +78,9 @@ namespace StraightEdge.UI
                 toolButton.Click += new EventHandler(toolButton_Click);
                 window.setTooltip(toolButton, tool.tooltip);
                 Controls.Add(toolButton);
-                ypos += BUTTONSIZE;
+                ypos += (BUTTONSIZE + 1);
             }
-            this.Size = new Size(BUTTONSIZE + 4, ypos);
+            this.Size = new Size(BUTTONSIZE + 6, ypos);
             currentButton = null;
         }
 
@@ -110,7 +106,7 @@ namespace StraightEdge.UI
             toolButton.FlatAppearance.BorderColor = Color.Red;
             toolButton.FlatAppearance.BorderSize = 2;
             currentButton = toolButton;
-            window.canvas.setCurrentTool((SETool)toolButton.Tag);
+            canvas.setCurrentTool((SETool)toolButton.Tag);
         }
     }
 }

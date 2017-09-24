@@ -32,8 +32,8 @@ namespace StraightEdge.Tools
         public PolygonTool(SEWindow window)
             : base(window)
         {
-            buttonText = "Poly";
-            tooltip = "Polygon";
+            buttonIcon = "toolboxpolygon";
+            tooltip = "draw polygons";
         }
 
     }

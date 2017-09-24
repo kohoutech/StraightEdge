@@ -34,6 +34,7 @@ namespace StraightEdge.Shapes
     {
         public SEWindow window;
         public SEDocument doc;
+        public Bitmap bmp;
         public List<SEShape> shapes;
 
         public static void registerShapes()
@@ -46,15 +47,19 @@ namespace StraightEdge.Shapes
         public SEGraphic() : base(null)
         {
             window = null;
+            bmp = new Bitmap(640, 480);
             shapes = new List<SEShape>();
         }
 
         public override void render(Graphics g)
         {
+            Graphics bg = Graphics.FromImage(bmp);
+            bg.Clear(Color.White);
             foreach (SEShape shape in shapes)           //shapes are stored in order bottom to top
             {
-                shape.render(g);
+                shape.render(bg);
             }
+            g.DrawImage(bmp, 0, 0);
         }
 
 //-----------------------------------------------------------------------------

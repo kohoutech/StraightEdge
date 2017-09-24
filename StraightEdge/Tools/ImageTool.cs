@@ -32,8 +32,8 @@ namespace StraightEdge.Tools
         public ImageTool(SEWindow window)
             : base(window)
         {
-            buttonText = "Pict";
-            tooltip = "Image";
+            buttonIcon = "toolboximage";
+            tooltip = "add pictures and photos";
         }
 
     }

@@ -32,8 +32,8 @@ namespace StraightEdge.Tools
         public TextTool(SEWindow window)
             : base(window)
         {
-            buttonText = "Text";
-            tooltip = "Text";
+            buttonIcon = "toolboxtext";
+            tooltip = "draw text";
         }
 
     }

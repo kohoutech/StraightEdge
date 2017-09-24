@@ -32,8 +32,8 @@ namespace StraightEdge.Tools
         public LineTool(SEWindow window)
             : base(window)
         {
-            buttonText = "Line";
-            tooltip = "Line";
+            buttonIcon = "toolboxline";
+            tooltip = "draw lines";
         }
 
     }

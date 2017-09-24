@@ -55,9 +55,11 @@ namespace StraightEdge.UI
             // 
             // SECanvas
             // 
+            this.BackColor = System.Drawing.Color.PowderBlue;
             this.DoubleBuffered = true;
             this.Name = "SECanvas";
             this.ResumeLayout(false);
+
         }
 
         public void setGraphic(SEGraphic graph)

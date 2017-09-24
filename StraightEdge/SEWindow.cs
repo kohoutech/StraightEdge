@@ -35,8 +35,9 @@ namespace StraightEdge
 {
     public partial class SEWindow : Form
     {
+        public ToolBar toolbar;
         public SEControlPanel controlPanel;
-        public SECanvas canvas;
+        public SEEasel easel;
         public SEToolBox toolbox;
         public SEStatusPanel statusPanel;
         public ToolTip SEToolTip;
@@ -47,9 +48,9 @@ namespace StraightEdge
         {
             SEToolTip = new ToolTip();
 
-            canvas = new SECanvas(this);
-            canvas.Dock = DockStyle.Fill;
-            this.Controls.Add(canvas);
+            easel = new SEEasel(this);
+            easel.Dock = DockStyle.Fill;
+            this.Controls.Add(easel);
 
             toolbox = new SEToolBox(this);
             toolbox.Dock = DockStyle.Left;
@@ -58,6 +59,10 @@ namespace StraightEdge
             controlPanel = new SEControlPanel(this);
             controlPanel.Dock = DockStyle.Top;
             this.Controls.Add(controlPanel);
+
+            toolbar = new ToolBar();
+            toolbar.Dock = DockStyle.Top;
+            this.Controls.Add(toolbar);
 
             statusPanel = new SEStatusPanel(this);
             statusPanel.Dock = DockStyle.Bottom;
@@ -74,7 +79,7 @@ namespace StraightEdge
         public void setCurrentDocument(SEDocument doc)
         {
             currentDoc = doc;
-            canvas.setGraphic(doc.graph);
+            easel.canvas.setGraphic(doc.graph);
             Text = "StraightEdge [" + doc.fileName + "]";
         }
 
@@ -91,8 +96,8 @@ namespace StraightEdge
             //call get new graphic filename dialog box
             String filename = "";
             SEOpenFileDialog.InitialDirectory = Application.StartupPath;
-            SEOpenFileDialog.DefaultExt = "*.rul";
-            SEOpenFileDialog.Filter = "StraightEdge Illustration|*.rul|All files|*.*";
+            SEOpenFileDialog.DefaultExt = "*.rule";
+            SEOpenFileDialog.Filter = "StraightEdge Illustration|*.rule|All files|*.*";
             SEOpenFileDialog.ShowDialog();
             filename = SEOpenFileDialog.FileName;
             if (filename.Length != 0)
@@ -109,8 +114,8 @@ namespace StraightEdge
             {
                 //call get save project filename dialog box
                 SESaveFileDialog.InitialDirectory = Application.StartupPath;
-                SESaveFileDialog.DefaultExt = "*.rul";
-                SESaveFileDialog.Filter = "StraightEdge Illustration|*.rul|All files|*.*";
+                SESaveFileDialog.DefaultExt = "*.rule";
+                SESaveFileDialog.Filter = "StraightEdge Illustration|*.rule|All files|*.*";
                 SESaveFileDialog.ShowDialog();
                 filename = SESaveFileDialog.FileName;
                 if (filename.Length == 0) return;

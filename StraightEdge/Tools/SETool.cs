@@ -36,7 +36,7 @@ namespace StraightEdge.Tools
         public SECanvas canvas;
 
         //toolbox
-        public String buttonText;
+        public String buttonIcon;
         public String tooltip;
 
         //control panel
@@ -61,8 +61,8 @@ namespace StraightEdge.Tools
         public SETool(SEWindow _window)
         {
             window = _window;
-            canvas = window.canvas;
-            buttonText = "none";
+            canvas = window.easel.canvas;
+            buttonIcon = "none";
             tooltip = "none";
             strip = new ControlStrip();
         }
