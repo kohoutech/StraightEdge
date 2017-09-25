@@ -33,15 +33,15 @@ namespace StraightEdge.Tools
     public class RectangleTool : SETool
     {
         SERectangle currentRect;
-//        int orgX;
-//        int orgY;
+        int orgX;
+        int orgY;
 
-        //control strip
-//        TextBox txtX;
-//        TextBox txtY;
-//        TextBox txtW;
-//        TextBox txtH;
-//        bool updatingStrip;
+        //control panel
+        ToolStripTextBox txtX;
+        ToolStripTextBox txtY;
+        ToolStripTextBox txtW;
+        ToolStripTextBox txtH;
+        bool updatingPanel;
 
         static bool registered = false;
 
@@ -59,168 +59,135 @@ namespace StraightEdge.Tools
             buttonIcon = "toolboxrect";
             tooltip = "draw squares and rectangles";
 
-            //buildControlStrip();
-            //updatingStrip = false;
+            buildControlStrip();
+            updatingPanel = false;
         }
 
-//        public override void setCurrentShape(SEShape shape)
-//        {
-//            currentRect = (SERectangle)shape;
-//            updateControlStrip();
-//        }
+        public override void setCurrentShape(SEShape shape)
+        {
+            currentRect = (SERectangle)shape;
+            updateControlPanel();
+        }
 
-//        public override void loadShape(XmlNode shapeNode, SEGraphic illo)
-//        {
-//            //load shape values from xml node
-//            String id = shapeNode.Attributes["id"].Value;
-//            float orgX = Single.Parse(shapeNode.Attributes["xpos"].Value);
-//            float orgY = Single.Parse(shapeNode.Attributes["ypos"].Value);
-//            int pencolor = Convert.ToInt32(shapeNode.Attributes["pencolor"].Value,16);
-//            float penwidth = Single.Parse(shapeNode.Attributes["penwidth"].Value);
-//            int brushcolor = Convert.ToInt32(shapeNode.Attributes["brushcolor"].Value,16);
-//            float brushopacity = Single.Parse(shapeNode.Attributes["brushopacity"].Value);
-//            float width = Single.Parse(shapeNode.Attributes["width"].Value);
-//            float height = Single.Parse(shapeNode.Attributes["height"].Value);
+//- control strip -------------------------------------------------------------
 
-//            //create new rect shape & add it to canvas
-//            currentRect = new SERectangle(canvas.curGraphic.shapes.Count, orgX, orgY);
-//            currentRect.id = id;
-//            currentRect.penColor = Color.FromArgb(pencolor);
-//            currentRect.penWidth = penwidth;
-//            currentRect.brushColor = Color.FromArgb(brushcolor);
-//            currentRect.brushOpacity = brushopacity;
-//            currentRect.setWidth(width);
-//            currentRect.setHeight(height);
-//            currentRect.tool = this;
+        public void buildControlStrip()
+        {
+            ToolStripLabel lblX = new ToolStripLabel("X: ");
+            controlPanel.Add(lblX);
+            txtX = new ToolStripTextBox();
+            txtX.BorderStyle = BorderStyle.FixedSingle;
+            txtX.Leave += new EventHandler(xposTextBox_Leave);
+            controlPanel.Add(txtX);
+            ToolStripLabel lblY = new ToolStripLabel("Y: ");
+            controlPanel.Add(lblY);
+            txtY = new ToolStripTextBox();
+            txtY.BorderStyle = BorderStyle.FixedSingle;
+            txtY.Leave += new EventHandler(yposTextBox_Leave);
+            controlPanel.Add(txtY);
+            
+            ToolStripLabel lblW = new ToolStripLabel("W: ");
+            controlPanel.Add(lblW);            
+            txtW = new ToolStripTextBox();
+            txtW.BorderStyle = BorderStyle.FixedSingle;
+            txtW.Leave += new EventHandler(widthTextBox_Leave);
+            controlPanel.Add(txtW);
+            ToolStripLabel lblH = new ToolStripLabel("H: ");
+            controlPanel.Add(lblH);
+            txtH = new ToolStripTextBox();
+            txtH.BorderStyle = BorderStyle.FixedSingle;
+            txtH.Leave += new EventHandler(heightTextBox_Leave);
+            controlPanel.Add(txtH);
 
-//            illo.shapes.Add(currentRect);
-//        }
+            ToolStripLabel lblRX = new ToolStripLabel("RX: ");
+            controlPanel.Add(lblRX);            
+            ToolStripTextBox txtRX = new ToolStripTextBox();
+            txtRX.BorderStyle = BorderStyle.FixedSingle;
+            controlPanel.Add(txtRX);
+            ToolStripLabel lblRY = new ToolStripLabel("RY: ");
+            controlPanel.Add(lblRY);
+            ToolStripTextBox txtRY = new ToolStripTextBox();
+            txtRY.BorderStyle = BorderStyle.FixedSingle;
+            controlPanel.Add(txtRY);
+        }
 
-////- control strip -------------------------------------------------------------
+        private void xposTextBox_Leave(object sender, EventArgs e)
+        {
+            if (!updatingPanel)
+            {
+                currentRect.setPos(Single.Parse(txtX.Text), currentRect.ypos);
+                canvas.Invalidate();
+            }
+        }
 
-//        public void buildControlStrip()
-//        {
-//            Label lblX = new Label();
-//            lblX.Width = 20;
-//            lblX.Text = "X: ";
+        private void yposTextBox_Leave(object sender, EventArgs e)
+        {
+            if (!updatingPanel)
+            {
+                currentRect.setPos(currentRect.xpos, Single.Parse(txtY.Text));
+                canvas.Invalidate();
+            }
+        }
 
-//            strip.add(lblX);
+        private void widthTextBox_Leave(object sender, EventArgs e)
+        {
+            if (!updatingPanel)
+            {
+                currentRect.setWidth(Single.Parse(txtW.Text));
+                canvas.Invalidate();
+            }
+        }
 
-//            txtX = new TextBox();
-//            txtX.Width = 50;
-//            txtX.Leave += xposTextBox_Leave; 
-//            strip.add(txtX);
+        private void heightTextBox_Leave(object sender, EventArgs e)
+        {
+            if (!updatingPanel)
+            {
+                currentRect.setHeight(Single.Parse(txtH.Text));
+                canvas.Invalidate();
+            }
+        }
 
-//            Label lblY = new Label();
-//            lblY.Width = 20;
-//            lblY.Text = "Y: ";
-//            strip.add(lblY);
+        public override void updateControlPanel()
+        {
+            updatingPanel = true;
+            txtX.Text = currentRect.xpos.ToString();
+            txtY.Text = currentRect.ypos.ToString();
+            txtW.Text = currentRect.width.ToString();
+            txtH.Text = currentRect.height.ToString();
+            updatingPanel = false;            
+        }
 
-//            txtY = new TextBox();
-//            txtY.Width = 50;
-//            txtY.Leave += yposTextBox_Leave; 
-//            strip.add(txtY);
+//- mouse handling ------------------------------------------------------------
 
-//            Label lblW = new Label();
-//            lblW.Width = 20;
-//            lblW.Text = "W: ";
-//            strip.add(lblW);
+        //start rectangle
+        public override void mouseDown(MouseEventArgs e)
+        {
+            orgX = e.X;
+            orgY = e.Y;
+            currentRect = new SERectangle(canvas.graphic);
+            currentRect.setPos(orgX, orgY);
+            currentRect.setPen(window.statusPanel.penColor, window.statusPanel.penWidth);
+            currentRect.setBrush(window.statusPanel.brushColor);
+            canvas.graphic.shapes.Add(currentRect);
+        }
 
-//            txtW = new TextBox();
-//            txtW.Width = 50;
-//            txtW.Leave += widthTextBox_Leave;
-//            strip.add(txtW);
+        //public override void mouseMove(MouseEventArgs e)
+        //{
+        //}
 
-//            Label lblH = new Label();
-//            lblH.Width = 20;
-//            lblH.Text = "H: ";
-//            strip.add(lblH);
+        public override void mouseDrag(MouseEventArgs e)
+        {
+            int ofsX = e.X - orgX;
+            int ofsY = e.Y - orgY;
+            currentRect.setWidth(ofsX);
+            currentRect.setHeight(ofsY);
+        }
 
-//            txtH = new TextBox();
-//            txtH.Width = 50;
-//            txtH.Leave += heightTextBox_Leave;
-//            strip.add(txtH);
-//        }
-
-//        private void xposTextBox_Leave(object sender, EventArgs e)
-//        {
-//            if (!updatingStrip)
-//            {
-//                currentRect.setPos(Single.Parse(txtX.Text), currentRect.ypos);
-//                canvas.Invalidate();
-//            }
-//        }
-
-//        private void yposTextBox_Leave(object sender, EventArgs e)
-//        {
-//            if (!updatingStrip)
-//            {
-//                currentRect.setPos(currentRect.xpos, Single.Parse(txtY.Text));
-//                canvas.Invalidate();
-//            }
-//        }
-
-//        private void widthTextBox_Leave(object sender, EventArgs e)
-//        {
-//            if (!updatingStrip)
-//            {
-//                currentRect.setWidth(Single.Parse(txtW.Text));
-//                canvas.Invalidate();
-//            }
-//        }
-
-//        private void heightTextBox_Leave(object sender, EventArgs e)
-//        {
-//            if (!updatingStrip)
-//            {
-//                currentRect.setHeight(Single.Parse(txtH.Text));
-//                canvas.Invalidate();
-//            }
-//        }
-
-//        public override void updateControlStrip()
-//        {
-//            updatingStrip = true;
-//            txtX.Text = currentRect.xpos.ToString();
-//            txtY.Text = currentRect.ypos.ToString();
-//            txtW.Text = currentRect.rect.Width.ToString();
-//            txtH.Text = currentRect.rect.Height.ToString();
-//            updatingStrip = false;            
-//        }
-
-////- mouse handling ------------------------------------------------------------
-
-//        //start rectangle
-//        public override void mouseDown(MouseEventArgs e)
-//        {
-//            orgX = e.X;
-//            orgY = e.Y;
-//            currentRect = new SERectangle(canvas.curGraphic.shapes.Count, orgX, orgY);
-//            currentRect.penColor = window.statusPanel.penColor;
-//            currentRect.penWidth = (float)window.statusPanel.penWidth;
-//            currentRect.brushColor = window.statusPanel.brushColor;
-//            currentRect.brushOpacity = (float) window.statusPanel.brushOpacity;
-//            currentRect.tool = this;
-//            canvas.curGraphic.shapes.Add(currentRect);
-//        }
-
-//        public override void mouseMove(MouseEventArgs e)
-//        {
-//        }
-
-//        public override void mouseDrag(MouseEventArgs e)
-//        {
-//            int ofsX = e.X - orgX;
-//            int ofsY = e.Y - orgY;
-//            currentRect.setWidth(ofsX);
-//            currentRect.setHeight(ofsY);
-//        }
-
-//        //finish rectange
-//        public override void mouseUp(MouseEventArgs e)
-//        {
-//            canvas.setSelection(currentRect);
-//        }
+        //finish rectange
+        public override void mouseUp(MouseEventArgs e)
+        {
+            canvas.setSelection(currentRect);
+        }
 
     }
 }

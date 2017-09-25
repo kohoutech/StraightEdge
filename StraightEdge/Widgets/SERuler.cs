@@ -36,10 +36,15 @@ namespace StraightEdge.Widgets
         }
 
         Direction dir;
+        public int curpos;
+        public int org;
 
         public SERuler(Direction _dir)
         {
             dir = _dir;
+            curpos = 0;
+            this.DoubleBuffered = true;
+
             if (dir == Direction.HORZ)
             {
                 this.Size = new Size(500, 20);
@@ -48,6 +53,18 @@ namespace StraightEdge.Widgets
             {
                 this.Size = new Size(20, 400);
             }
+        }
+
+        public void setOrigin(int _org)
+        {
+            org = _org;
+            Invalidate();
+        }
+
+        public void setCursorPos(int pos)
+        {
+            curpos = pos;
+            Invalidate();
         }
 
         private void drawVertNumbers(Graphics g, Font font, int num, int ypos)
@@ -83,15 +100,22 @@ namespace StraightEdge.Widgets
             Font tickFont = new Font(FontFamily.GenericSansSerif, 7);
             if (dir == Direction.HORZ)
             {
-                for (int i = 0; i < this.Width - 20; i += 5)
+                int firsttick = (org / 5) * 5;
+                int i = (org % 5 == 0) ? 0 : (firsttick + 5 - org);
+                for (; i < (this.Width - 20); i += 5)
                 {
-                    int tickHeight = (i % 50 == 0) ? 0 : (i % 10 == 0) ? 12 : 16;
+                    int tickval = org + i;
+                    int tickHeight = (tickval % 50 == 0) ? 0 : (tickval % 10 == 0) ? 12 : 16;
                     int xpos = i + 20;
                     g.DrawLine(Pens.Black, xpos, tickHeight, xpos, 20);
-                    if (i % 50 == 0)
+                    if (tickval % 50 == 0)
                     {
-                        g.DrawString(i.ToString(), tickFont, Brushes.Black, xpos, -1);
+                        g.DrawString(tickval.ToString(), tickFont, Brushes.Black, xpos, -1);
                     }
+                }
+                if (curpos < this.Width)
+                {
+                    g.DrawLine(Pens.Red, curpos + 20, 0, curpos + 20, 20);
                 }
             }
             else
@@ -105,6 +129,10 @@ namespace StraightEdge.Widgets
                     {
                         drawVertNumbers(g, tickFont, i, ypos);
                     }
+                }
+                if (curpos < this.Height)
+                {
+                    g.DrawLine(Pens.Red, 0, curpos, 20, curpos);
                 }
             }
         }

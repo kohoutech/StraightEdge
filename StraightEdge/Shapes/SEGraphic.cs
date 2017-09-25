@@ -32,37 +32,54 @@ namespace StraightEdge.Shapes
 {
     public class SEGraphic : SEShape
     {
-        public SEWindow window;
         public SEDocument doc;
         public Bitmap bmp;
         public List<SEShape> shapes;
 
+        public int xpos;
+        public int ypos;
+
+        //register all the shapes we have for loading from and saving to .rule files
         public static void registerShapes()
         {
-            SEShape.registerShape("rectangle", new SERectangle(null));
+            SEShape.registerShape("rectangle", new SERectangle(null));        
         }
 
 //-----------------------------------------------------------------------------
 
         public SEGraphic() : base(null)
         {
-            window = null;
             bmp = new Bitmap(640, 480);
             shapes = new List<SEShape>();
+            xpos = 0;
+            ypos = 0;
+        }
+
+        public void setPosX(int xOfs)
+        {
+            xpos = xOfs;
+        }
+
+        public void setPosY(int yOfs)
+        {
+            ypos = yOfs;
         }
 
         public override void render(Graphics g)
         {
+            //draw all shapes to graphic bitmap
             Graphics bg = Graphics.FromImage(bmp);
             bg.Clear(Color.White);
             foreach (SEShape shape in shapes)           //shapes are stored in order bottom to top
             {
                 shape.render(bg);
             }
-            g.DrawImage(bmp, 0, 0);
+
+            //now, draw completed bitmap to canvas at cur pos
+            g.DrawImage(bmp, xpos, ypos);
         }
 
-//-----------------------------------------------------------------------------
+//- loading & saving ----------------------------------------------------------
 
         public override SEShape loadShape(XmlNode shapeRoot, SEShape parent)
         {

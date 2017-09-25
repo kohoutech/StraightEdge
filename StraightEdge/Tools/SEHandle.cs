@@ -21,50 +21,51 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
-
-using StraightEdge.Shapes;
-using StraightEdge.UI;
+using System.Drawing;
 
 namespace StraightEdge.Tools
 {
-    class PointerTool : SETool
+    public class SEHandle
     {
-        int orgX;
-        int orgY;
+        public const int HANDLEWIDTH = 4;
+        public float xpos;
+        public float ypos;
+        public RectangleF rect;
 
-        public PointerTool(SEWindow window)
-            : base(window)
+        public SEHandle()
         {
-            buttonIcon = "toolboxpointer";
-            tooltip = "select and group elements";
-            orgX = 0;
-            orgY = 0;
+            rect = new RectangleF(0 - (HANDLEWIDTH / 2), 0 - (HANDLEWIDTH / 2), HANDLEWIDTH, HANDLEWIDTH);
         }
 
-        public override void mouseDown(MouseEventArgs e)
+        public SEHandle(float x, float y)
         {
-            orgX = e.X;
-            orgY = e.Y;
-            SEShape selected = canvas.hitTest(orgX, orgY);
-            canvas.setSelection(selected);
+            rect = new RectangleF(xpos = x - (HANDLEWIDTH / 2), y - (HANDLEWIDTH / 2), HANDLEWIDTH, HANDLEWIDTH);
         }
 
-        public override void mouseDrag(MouseEventArgs e)
+        public void setXPos(float x)
         {
-            int ofsX = e.X - orgX;
-            int ofsY = e.Y - orgY;
-            if (canvas.selectedShape != null)
-            {
-                canvas.selectedShape.move(ofsX, ofsY);
-            }
-            orgX = e.X;
-            orgY = e.Y;
+            rect.X = x - (HANDLEWIDTH / 2);
         }
 
-        public override void mouseUp(MouseEventArgs e)
+        public void setYPos(float y)
         {
+            rect.Y = y - (HANDLEWIDTH / 2);
         }
 
+        public void setPos(float x, float y)
+        {
+            setXPos(x);
+            setYPos(y);
+        }
+
+        public void move(float x, float y)
+        {
+            rect.Offset(x, y);
+        }
+
+        public void render(Graphics g)
+        {
+            g.DrawRectangle(Pens.Black, rect.X, rect.Y, rect.Width, rect.Height);
+        }
     }
 }

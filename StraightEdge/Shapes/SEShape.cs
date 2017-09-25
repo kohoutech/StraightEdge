@@ -46,7 +46,7 @@ namespace StraightEdge.Shapes
 
         //rendering
         public Pen pen;
-        public Brush brush;
+        public SolidBrush brush;
 
 //- shape registry -------------------------------------------------------------
 
@@ -67,12 +67,13 @@ namespace StraightEdge.Shapes
         public SEShape(SEShape _parent)
         {
             parent = _parent;
+            tool = null;
             id = "id" + 0;
             path = new GraphicsPath(FillMode.Alternate);
             xpos = 0.0f;
             ypos = 0.0f;
-            pen = Pens.Black;
-            brush = Brushes.White;
+            pen = new Pen(Color.Black, 1.0f);
+            brush = new SolidBrush(Color.White);
             xmlShapeName = "shape";
         }
 
@@ -82,11 +83,26 @@ namespace StraightEdge.Shapes
         }
 
         public virtual void setPos(float xOfs, float yOfs)
-        {            
+        {
+            xpos = xOfs;
+            ypos = yOfs;
+            tool.updateControlPanel();
         }
 
         public virtual void move(float xOfs, float yOfs)
         {
+            tool.updateControlPanel();
+        }
+
+        public virtual void setPen(Color color, float width)
+        {
+            pen.Color = color;
+            pen.Width = width;
+        }
+
+        public virtual void setBrush(Color color)
+        {
+            brush.Color = color;            
         }
 
         public virtual void render(Graphics g)

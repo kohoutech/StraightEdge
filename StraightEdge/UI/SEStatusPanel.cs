@@ -27,7 +27,7 @@ using System.Drawing.Drawing2D;
 
 namespace StraightEdge.UI
 {
-    public class SEStatusPanel : UserControl
+    public class SECanvasPanel : UserControl
     {
         public SEWindow window;
 
@@ -50,15 +50,18 @@ namespace StraightEdge.UI
         public int penWidth;
         public float brushOpacity;
 
-        public SEStatusPanel(SEWindow _window)        
+
+        public SECanvasPanel(SEWindow _window)        
         {
             window = _window;
             InitializeComponent();
 
             palette.statusPanel = this;
+
             penColor = Color.Black;
-            brushColor = Color.White;
             penWidth = 1;
+
+            brushColor = Color.White;
             brushOpacity = 1.0f;
         }
 
@@ -232,6 +235,8 @@ namespace StraightEdge.UI
             lblYpos.Text = "Y: ";
         }
 
+//- pen & brush ---------------------------------------------------------------
+
         public void setPenColor(Color color)
         {
             penColor = color;
@@ -246,21 +251,14 @@ namespace StraightEdge.UI
             this.Invalidate();
         }
 
-        //- rendering -----------------------------------------------------------------
+//- rendering -----------------------------------------------------------------
 
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            Graphics g = e.Graphics;
-            g.SmoothingMode = SmoothingMode.AntiAlias;
-
-            //SolidBrush colorPen = new SolidBrush(penColor);
-            //g.FillRectangle(colorPen, 30, 30, 10, 10);
-
-            //SolidBrush colorBrush = new SolidBrush(brushColor);
-            //g.FillRectangle(colorBrush, 30, 50, 10, 10);
-
-        }
+        //protected override void OnPaint(PaintEventArgs e)
+        //{
+        //    base.OnPaint(e);
+        //    Graphics g = e.Graphics;
+        //    g.SmoothingMode = SmoothingMode.AntiAlias;
+        //}
 
         private void nudPenWidth_ValueChanged(object sender, EventArgs e)
         {

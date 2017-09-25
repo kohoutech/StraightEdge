@@ -32,6 +32,7 @@ namespace StraightEdge.UI
 {
     public class SECanvas : UserControl
     {
+        public SEEasel easel;
         public SEWindow window;
         public SEGraphic graphic;
 
@@ -40,9 +41,10 @@ namespace StraightEdge.UI
         
         bool isDragging;
 
-        public SECanvas(SEWindow _window)
+        public SECanvas(SEEasel _easel)
         {
-            window = _window;
+            easel = _easel;
+            window = easel.window;
 
             InitializeComponent();
 
@@ -59,12 +61,11 @@ namespace StraightEdge.UI
             this.DoubleBuffered = true;
             this.Name = "SECanvas";
             this.ResumeLayout(false);
-
         }
 
-        public void setGraphic(SEGraphic graph)
+        public void setGraphic(SEGraphic _graphic)
         {
-            graphic = graph;
+            graphic = _graphic;
             selectedShape = null;
             currentTool = null;
             isDragging = false;
@@ -74,8 +75,12 @@ namespace StraightEdge.UI
         public void setCurrentTool(SETool tool)
         {
             currentTool = tool;
+            ToolStrip controlPanel = window.controlPanel();
+            controlPanel.Items.Clear();
+            controlPanel.Items.AddRange(tool.controlPanel.ToArray());       //put this tool's controls on control panel
         }
 
+        //find the shape at this cursor pos
         public SEShape hitTest(int xpos, int ypos)
         {
             SEShape result = null;
@@ -100,19 +105,20 @@ namespace StraightEdge.UI
             if (shape != null)
             {
                 //shape.selected = true;                                      //let shape know its selected
-                window.controlPanel.setControlStrip(shape.tool.strip);      //set control panel to shape's type's controls
+                //window.controlPanel.setControlStrip(shape.tool.strip);      //set control panel to shape's type's controls
                 shape.tool.setCurrentShape(shape);                          //and link control strip to THIS shape
 
                 this.Cursor = Cursors.SizeAll;            //this may need to be set by the selected shape, for now we're dragging
             }
             else
             {
-                window.controlPanel.setControlStrip(null);
+                //window.controlPanel.setControlStrip(null);
                 this.Cursor = Cursors.Arrow;
             }
         }
 
 //- mouse events --------------------------------------------------------------
+
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -130,7 +136,7 @@ namespace StraightEdge.UI
             base.OnMouseMove(e);
             int xpos = e.X;
             int ypos = e.Y;
-            window.statusPanel.setCursorPos(xpos, ypos);
+            easel.setCursorPos(xpos, ypos);
             if (currentTool != null)
             {
                 if (isDragging)
@@ -155,7 +161,7 @@ namespace StraightEdge.UI
         protected override void  OnMouseLeave(EventArgs e)
         {
  	        base.OnMouseLeave(e);
-            window.statusPanel.clearCursorPos();
+            easel.clearCursorPos();
         }
 
 //- key events --------------------------------------------------------------
@@ -171,7 +177,17 @@ namespace StraightEdge.UI
                 }
             }
             Invalidate();
-        } 
+        }
+
+        protected override void OnKeyPress(KeyPressEventArgs e)
+        {
+            base.OnKeyPress(e);
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+        }
 
 //- rendering -----------------------------------------------------------------
 
@@ -180,7 +196,8 @@ namespace StraightEdge.UI
             base.OnPaint(e);
             Graphics g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            graphic.render(g);
+
+            graphic.render(g);          //paint the graphic which in turn will paint all its shapes & groups
         }
     }
 }

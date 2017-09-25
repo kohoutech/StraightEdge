@@ -24,27 +24,26 @@ using System.Text;
 using System.Drawing;
 using System.Xml;
 
+using StraightEdge.Tools;
+
 namespace StraightEdge.Shapes
 {
     public class SERectangle : SEShape
     {
-        float width;
-        float height;
+        public float width;
+        public float height;
+        public float rx;
+        public float ry;
 
         public SERectangle(SEShape parent)
             : base(parent)
         {
             xmlShapeName = "rectangle";
-        }
-
-        public override void setPos(float xOfs, float yOfs)
-        {
-            //tool.updateControlStrip();
-        }
-
-        public override void move(float xOfs, float yOfs)
-        {
-            //tool.updateControlStrip();
+            tool = (RectangleTool)SETool.getShapeTool("rectangle");
+            width = 0;
+            height = 0;
+            rx = 0;
+            ry = 0;
         }
 
         public void setWidth(float _width) 

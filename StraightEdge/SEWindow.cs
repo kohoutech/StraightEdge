@@ -35,11 +35,9 @@ namespace StraightEdge
 {
     public partial class SEWindow : Form
     {
-        public ToolBar toolbar;
-        public SEControlPanel controlPanel;
         public SEEasel easel;
         public SEToolBox toolbox;
-        public SEStatusPanel statusPanel;
+        public SECanvasPanel statusPanel;
         public ToolTip SEToolTip;
 
         public SEDocument currentDoc;
@@ -50,22 +48,15 @@ namespace StraightEdge
 
             easel = new SEEasel(this);
             easel.Dock = DockStyle.Fill;
-            this.Controls.Add(easel);
 
             toolbox = new SEToolBox(this);
             toolbox.Dock = DockStyle.Left;
-            this.Controls.Add(toolbox);
-
-            controlPanel = new SEControlPanel(this);
-            controlPanel.Dock = DockStyle.Top;
-            this.Controls.Add(controlPanel);
-
-            toolbar = new ToolBar();
-            toolbar.Dock = DockStyle.Top;
-            this.Controls.Add(toolbar);
-
-            statusPanel = new SEStatusPanel(this);
+            
+            statusPanel = new SECanvasPanel(this);
             statusPanel.Dock = DockStyle.Bottom;
+
+            this.Controls.Add(easel);
+            this.Controls.Add(toolbox);
             this.Controls.Add(statusPanel);
 
             InitializeComponent();
@@ -81,6 +72,11 @@ namespace StraightEdge
             currentDoc = doc;
             easel.canvas.setGraphic(doc.graph);
             Text = "StraightEdge [" + doc.fileName + "]";
+        }
+
+        public ToolStrip controlPanel()
+        {
+            return SEControlPanel;
         }
 
 //-----------------------------------------------------------------------------
@@ -198,6 +194,10 @@ namespace StraightEdge
         public void setTooltip(Control child, String tipText)
         {
             SEToolTip.SetToolTip(child, tipText);
+        }
+
+        public void setCurrentTool(SETool tool)
+        {
         }
 
     }

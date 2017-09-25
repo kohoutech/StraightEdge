@@ -33,7 +33,7 @@ namespace StraightEdge.Widgets
     {
         public const int COLORRECTSIZE = 30;
 
-        public SEStatusPanel statusPanel;
+        public SECanvasPanel statusPanel;
         public List<Color> colors;        
         
         public SEPalette()

@@ -60,7 +60,7 @@
     <Compile Include="Shapes\SEGraphic.cs" />
     <Compile Include="Shapes\SEEllipse.cs" />
     <Compile Include="Shapes\SEGroup.cs" />
-    <Compile Include="Shapes\SEHandle.cs" />
+    <Compile Include="Tools\SEHandle.cs" />
     <Compile Include="Shapes\SEImage.cs" />
     <Compile Include="Shapes\SELine.cs" />
     <Compile Include="Shapes\SEPath.cs" />
@@ -75,7 +75,7 @@
     <Compile Include="Tools\ImageTool.cs" />
     <Compile Include="Tools\LineTool.cs" />
     <Compile Include="Tools\PathTool.cs" />
-    <Compile Include="Tools\PointerTool.cs" />
+    <Compile Include="Tools\SelectTool.cs" />
     <Compile Include="Tools\PolygonTool.cs" />
     <Compile Include="Tools\RectangleTool.cs" />
     <Compile Include="Tools\SETool.cs" />
@@ -149,7 +149,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\export.png" />
+    <None Include="Resources\import.png" />
+    <Content Include="Resources\redo.png" />
     <Content Include="Resources\SEIcon.ico" />
+    <None Include="Resources\undo.png" />
     <None Include="Resources\toolboxtext.png" />
     <None Include="Resources\toolboxrect.png" />
     <None Include="Resources\toolboxpolygon.png" />

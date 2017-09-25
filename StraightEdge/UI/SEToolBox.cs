@@ -51,7 +51,7 @@ namespace StraightEdge.UI
             //add tools to the toolbox
             tools = new List<SETool>();
 
-            tools.Add(new PointerTool(window));
+            tools.Add(new SelectTool(window));
             tools.Add(new RectangleTool(window));
             tools.Add(new EllipseTool(window));
             tools.Add(new PolygonTool(window));
@@ -93,7 +93,7 @@ namespace StraightEdge.UI
             this.Name = "SEToolBox";
             //this.Size = new System.Drawing.Size(52, 267);
             this.ResumeLayout(false);
-        }
+        }        
 
         void toolButton_Click(object sender, EventArgs e)
         {
