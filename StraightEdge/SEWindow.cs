@@ -70,7 +70,7 @@ namespace StraightEdge
         public void setCurrentDocument(SEDocument doc)
         {
             currentDoc = doc;
-            easel.canvas.setGraphic(doc.graph);
+            //easel.canvas.setGraphic(doc.graph);
             Text = "StraightEdge [" + doc.fileName + "]";
         }
 

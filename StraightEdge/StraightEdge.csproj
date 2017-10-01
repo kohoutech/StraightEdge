@@ -104,7 +104,10 @@
     <Compile Include="Widgets\ColorDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Widgets\SERuler.cs">
+    <Compile Include="Widgets\SEHorzRuler.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Widgets\SEVertRuler.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <EmbeddedResource Include="SEWindow.resx">

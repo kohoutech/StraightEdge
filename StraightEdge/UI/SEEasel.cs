@@ -31,10 +31,12 @@ namespace StraightEdge.UI
 {
     public class SEEasel : UserControl
     {
+        const int FRAMEWIDTH = 20;
+
         public SEWindow window;
         public SECanvas canvas;
-        public SERuler vertRuler;
-        public SERuler horzRuler;
+        public SEVertRuler vertRuler;
+        public SEHorzRuler horzRuler;
         public VScrollBar vertScroller;
         public HScrollBar horzScroller;
 
@@ -44,74 +46,164 @@ namespace StraightEdge.UI
         int canvasHeight;
         int easelOrgX;
         int easelOrgY;
+        int expos;
+        int eypos;
 
         public SEEasel(SEWindow _window)
         {
             window = _window;
+            BackColor = Color.BlueViolet;
+            this.DoubleBuffered = true;
+
             canvas = new SECanvas(this);
-            canvas.Dock = DockStyle.Fill;
+            canvas.Location = new Point(FRAMEWIDTH, FRAMEWIDTH);
             this.Controls.Add(canvas);
 
-            canvasWidth = 640 * 2;
-            canvasHeight = 480 * 2;
-            easelOrgX = -300;
-            easelOrgY = -250;
+            canvasWidth = canvas.minWidth;
+            canvasHeight = canvas.minHeight;
+            easelOrgX = canvas.HORZMARGIN * -1;
+            easelOrgY = canvas.VERTMARGIN * -1;
+            expos = 0;
+            eypos = 0;
+
+            horzRuler = new SEHorzRuler(this);
+            horzRuler.Location = new Point(FRAMEWIDTH, 0);
+            this.Controls.Add(horzRuler);
+
+            vertRuler = new SEVertRuler(this, canvas.minHeight);
+            vertRuler.Location = new Point(0, FRAMEWIDTH);
+            this.Controls.Add(vertRuler);
 
             vertScroller = new VScrollBar();
-            vertScroller.Dock = DockStyle.Right;
             vertScroller.Minimum = 0;
-            vertScroller.Maximum = canvasHeight;
             vertScroller.Scroll += new ScrollEventHandler(vertScroller_Scroll);
             this.Controls.Add(vertScroller);
 
             horzScroller = new HScrollBar();
-            horzScroller.Dock = DockStyle.Bottom;
             horzScroller.Minimum = 0;
-            horzScroller.Maximum = canvasWidth;
             horzScroller.Scroll += new ScrollEventHandler(horzScroller_Scroll);
             this.Controls.Add(horzScroller);
 
-            vertRuler = new SERuler(SERuler.Direction.VERT);
-            vertRuler.Dock = DockStyle.Left;
-            this.Controls.Add(vertRuler);
+            //init positions
+            horzRuler.setStart(easelOrgX);
+            horzRuler.setOrigin(expos);
+            horzRuler.setLength(canvas.minWidth + FRAMEWIDTH);
+            canvas.setStartX(easelOrgX);
+            canvas.setOrgX(expos);
+            horzScroller.Maximum = canvas.minWidth;
+            horzScroller.Value = expos;
 
-            horzRuler = new SERuler(SERuler.Direction.HORZ);
-            horzRuler.Dock = DockStyle.Top;
-            this.Controls.Add(horzRuler);
+            vertRuler.setStart(easelOrgY);
+            vertRuler.setOrigin(eypos);
+            vertRuler.setLength(canvas.minHeight + FRAMEWIDTH);
+            canvas.setStartY(easelOrgY);
+            canvas.setOrgY(eypos);
+            vertScroller.Maximum = canvas.minHeight;
+            vertScroller.Value = eypos;
 
             cursorX = 0;
             cursorY = 0;
         }
 
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+
+            //horz position
+            int easelWidth = this.Width - (FRAMEWIDTH * 2);
+            if (easelWidth > canvas.minWidth) {
+                canvasWidth = easelWidth;
+                easelOrgX = (canvas.HORZMARGIN  + (canvasWidth - canvas.minWidth) / 2) * -1;
+                canvas.setStartX(easelOrgX);
+                canvas.setOrgX(0);
+                horzRuler.setStart(easelOrgX);
+                horzRuler.setOrigin(0);
+                horzRuler.setLength(canvasWidth + FRAMEWIDTH);
+                horzScroller.Enabled = false;
+            } else {
+                canvasWidth = canvas.minWidth;
+                int diff = canvasWidth - easelWidth;                //width of canvas not visible
+                if (diff < expos) expos = diff;                     //move horz thumb to match diff
+                easelOrgX = canvas.HORZMARGIN * -1;
+                canvas.setStartX(easelOrgX);
+                canvas.setOrgX(expos);
+                horzRuler.setStart(easelOrgX);
+                horzRuler.setOrigin(expos);
+                horzRuler.setLength(canvasWidth + FRAMEWIDTH);
+                horzScroller.Enabled = true;
+                horzScroller.Maximum = diff + (horzScroller.LargeChange - 1);
+                horzScroller.Value = expos;
+            }
+
+            //vert position
+            int easelHeight = this.Height - (FRAMEWIDTH * 2);
+            if (easelHeight > canvas.minHeight)
+            {
+                canvasHeight = easelHeight;
+                easelOrgY = (canvas.VERTMARGIN + (canvasHeight - canvas.minHeight) / 2) * -1;
+                canvas.setStartY(easelOrgY);
+                canvas.setOrgY(0);
+                vertRuler.setStart(easelOrgY);
+                vertRuler.setOrigin(0);
+                vertRuler.setLength(canvasHeight + FRAMEWIDTH);
+                vertScroller.Enabled = false;
+            }
+            else
+            {
+                canvasHeight = canvas.minHeight;
+                int diff = canvasHeight - easelHeight;              //height of canvas not visible
+                if (diff < eypos) eypos = diff;                     //move vert thumb to match diff
+                easelOrgY = canvas.VERTMARGIN * -1;
+                canvas.setStartY(easelOrgY);
+                canvas.setOrgY(eypos);
+                vertRuler.setStart(easelOrgY);
+                vertRuler.setOrigin(eypos);
+                vertRuler.setLength(canvasHeight + FRAMEWIDTH);
+                vertScroller.Enabled = true;
+                vertScroller.Maximum = diff + (vertScroller.LargeChange - 1);
+                vertScroller.Value = eypos;
+            }
+            
+            //resizing
+            if (canvas != null) canvas.Size = new Size(easelWidth, easelHeight);
+            if (horzRuler != null) horzRuler.Size = new Size(this.Width - FRAMEWIDTH, FRAMEWIDTH);
+            if (vertRuler != null) vertRuler.Size = new Size(20, this.Height - FRAMEWIDTH);
+            if (vertScroller != null)
+            {
+                vertScroller.Size = new Size(FRAMEWIDTH, easelHeight);
+                vertScroller.Location = new Point(this.Width - FRAMEWIDTH, FRAMEWIDTH);
+            }
+            if (horzScroller != null)
+            {
+                horzScroller.Size = new Size(easelWidth, FRAMEWIDTH);
+                horzScroller.Location = new Point(FRAMEWIDTH, this.Height - FRAMEWIDTH);
+            }
+            Invalidate();
+        }
+
         void horzScroller_Scroll(object sender, ScrollEventArgs e)
         {
-            int xpos = (e.NewValue + easelOrgX);
-            horzRuler.setOrigin(xpos);
-            canvas.graphic.setPosX(xpos * -1);
-            canvas.Invalidate();
+            expos = (e.NewValue);
+            horzRuler.setOrigin(expos);
+            canvas.setOrgX(expos);
+            Invalidate();
         }
 
         void vertScroller_Scroll(object sender, ScrollEventArgs e)
         {
-            int ypos = (e.NewValue + easelOrgY);
-            vertRuler.setOrigin(ypos);
-            canvas.graphic.setPosY(ypos * -1);
-            canvas.Invalidate();
+            eypos = (e.NewValue);
+            vertRuler.setOrigin(eypos);
+            canvas.setOrgY(eypos);
+            Invalidate();
         }
-
-        //protected override void OnResize(EventArgs e)
-        //{
-        //    base.OnResize(e);
-        //    horzScroller.Size = new Size(horzScroller.Width - vertScroller.Width, horzScroller.Height);
-        //}
 
         public void setCursorPos(int x, int y)
         {
             cursorX = x;
             cursorY = y;
             window.statusPanel.setCursorPos(cursorX, cursorY);
-            //horzRuler.setCursorPos(cursorX);
-            //vertRuler.setCursorPos(cursorY);
+            horzRuler.setCursorPos(cursorX);
+            vertRuler.setCursorPos(cursorY);
         }
 
         public void clearCursorPos()

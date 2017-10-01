@@ -44,6 +44,10 @@ namespace StraightEdge.Shapes
         public float xpos;
         public float ypos;
 
+        //size
+        public float width;
+        public float height;
+
         //rendering
         public Pen pen;
         public SolidBrush brush;
@@ -69,17 +73,30 @@ namespace StraightEdge.Shapes
             parent = _parent;
             tool = null;
             id = "id" + 0;
-            path = new GraphicsPath(FillMode.Alternate);
+            xmlShapeName = "shape";
+            
             xpos = 0.0f;
             ypos = 0.0f;
+            width = 0.0f;
+            height = 0.0f;
             pen = new Pen(Color.Black, 1.0f);
             brush = new SolidBrush(Color.White);
-            xmlShapeName = "shape";
+            path = new GraphicsPath(FillMode.Alternate);
         }
 
         public virtual bool hitTest(int xpos, int ypos)
         {
             return false;
+        }
+
+        public void setPosX(float xOfs)
+        {
+            xpos = xOfs;
+        }
+
+        public void setPosY(float yOfs)
+        {
+            ypos = yOfs;
         }
 
         public virtual void setPos(float xOfs, float yOfs)

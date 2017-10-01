@@ -32,23 +32,38 @@ namespace StraightEdge.UI
 {
     public class SECanvas : UserControl
     {
+        public int HORZMARGIN = 50;
+        public int VERTMARGIN = 50;
+
         public SEEasel easel;
         public SEWindow window;
         public SEGraphic graphic;
 
         public SEShape selectedShape;
         public SETool currentTool;
-        
+
+        int startx;
+        int starty;
+        int cxorg;
+        int cyorg;
+        public int minWidth;
+        public int minHeight;
         bool isDragging;
 
         public SECanvas(SEEasel _easel)
         {
             easel = _easel;
             window = easel.window;
+            minWidth = SEGraphic.DEFAULTWIDTH + (HORZMARGIN) * 2;
+            minHeight = SEGraphic.DEFAULTHEIGHT + (VERTMARGIN) * 2;
+            startx = 0;
+            starty = 0;
+            cxorg = 0;
+            cyorg = 0;
 
             InitializeComponent();
 
-            setGraphic(null);
+            setGraphic(new SEGraphic(this));
         }
 
         private void InitializeComponent()
@@ -66,11 +81,43 @@ namespace StraightEdge.UI
         public void setGraphic(SEGraphic _graphic)
         {
             graphic = _graphic;
+            graphic.setPos(0, 0);
+            int minWidth = graphic.gwidth + HORZMARGIN + HORZMARGIN;
+            int minHeight = graphic.gheight + VERTMARGIN + VERTMARGIN;
+
             selectedShape = null;
             currentTool = null;
             isDragging = false;
             Invalidate();
         }
+
+//- positioning ---------------------------------------------------------------
+
+        public void setStartX(int _startX)
+        {
+            startx = _startX;
+        }
+
+        public void setOrgX(int orgX)
+        {
+            cxorg = startx + orgX;
+            graphic.setPos(-(cxorg), -(cyorg));
+            Invalidate();
+        }
+
+        public void setStartY(int _startY)
+        {
+            starty = _startY;
+        }
+
+        public void setOrgY(int orgY)
+        {
+            cyorg = starty + orgY;
+            graphic.setPos(-(cxorg), -(cyorg));
+            Invalidate();
+        }
+
+//-----------------------------------------------------------------------------
 
         public void setCurrentTool(SETool tool)
         {
@@ -134,8 +181,8 @@ namespace StraightEdge.UI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            int xpos = e.X;
-            int ypos = e.Y;
+            int xpos = e.X + cxorg;
+            int ypos = e.Y + cyorg;
             easel.setCursorPos(xpos, ypos);
             if (currentTool != null)
             {

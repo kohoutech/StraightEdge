@@ -60,7 +60,7 @@ namespace StraightEdge
             window = _window;
             fileName = _filename;
 
-            graph = new SEGraphic();
+            graph = new SEGraphic(window.easel.canvas);
         }
 
         public void save()

@@ -26,18 +26,25 @@ using System.Drawing.Drawing2D;
 using System.Xml;
 
 using StraightEdge;
+using StraightEdge.UI;
 using StraightEdge.Tools;
 
 namespace StraightEdge.Shapes
 {
     public class SEGraphic : SEShape
     {
+        public const int DEFAULTWIDTH = 640;
+        public const int DEFAULTHEIGHT = 480;
+
+        public SECanvas canvas;
         public SEDocument doc;
         public Bitmap bmp;
         public List<SEShape> shapes;
 
-        public int xpos;
-        public int ypos;
+        public int gxpos;
+        public int gypos;
+        public int gwidth;
+        public int gheight;
 
         //register all the shapes we have for loading from and saving to .rule files
         public static void registerShapes()
@@ -47,22 +54,22 @@ namespace StraightEdge.Shapes
 
 //-----------------------------------------------------------------------------
 
-        public SEGraphic() : base(null)
+        public SEGraphic(SECanvas _canvas)
+            : base(null)
         {
-            bmp = new Bitmap(640, 480);
+            canvas = _canvas;
+            gxpos = 0;
+            gypos = 0;
+            gwidth = DEFAULTWIDTH;
+            gheight = DEFAULTHEIGHT;
+            bmp = new Bitmap(gwidth, gheight);
             shapes = new List<SEShape>();
-            xpos = 0;
-            ypos = 0;
         }
 
-        public void setPosX(int xOfs)
+        public void setPos(int xpos, int ypos)
         {
-            xpos = xOfs;
-        }
-
-        public void setPosY(int yOfs)
-        {
-            ypos = yOfs;
+            gxpos = xpos;
+            gypos = ypos;
         }
 
         public override void render(Graphics g)
@@ -76,7 +83,8 @@ namespace StraightEdge.Shapes
             }
 
             //now, draw completed bitmap to canvas at cur pos
-            g.DrawImage(bmp, xpos, ypos);
+            g.DrawImage(bmp, gxpos, gypos);
+            g.DrawRectangle(Pens.Black, gxpos, gypos, bmp.Width, bmp.Height);
         }
 
 //- loading & saving ----------------------------------------------------------
