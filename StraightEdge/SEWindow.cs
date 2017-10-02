@@ -63,15 +63,16 @@ namespace StraightEdge
 
             SEGraphic.registerShapes();
 
-            SEDocument initDoc = new SEDocument(this, "untitled");      //start with a new blank graphic
+            SEDocument initDoc = new SEDocument(this, null);      //start with a new blank graphic
             setCurrentDocument(initDoc);
         }
 
         public void setCurrentDocument(SEDocument doc)
         {
             currentDoc = doc;
-            //easel.canvas.setGraphic(doc.graph);
-            Text = "StraightEdge [" + doc.fileName + "]";
+            easel.canvas.setGraphic(doc.graph);
+            String name = (doc.filename != null) ? doc.filename : "untitled";
+            Text = "StraightEdge [" + name + "]";
         }
 
         public ToolStrip controlPanel()
@@ -83,7 +84,7 @@ namespace StraightEdge
 
         private void newFileMenuItem_Click(object sender, EventArgs e)
         {
-            SEDocument newDoc = new SEDocument(this, "untitled");      //load a new blank graphic
+            SEDocument newDoc = new SEDocument(this, null);      //load a new blank graphic
             setCurrentDocument(newDoc);
         }
 
@@ -106,7 +107,7 @@ namespace StraightEdge
         public void saveDocument(bool newName)
         {
             String filename = "";
-            if (newName || (currentDoc.fileName == null))
+            if (newName || (currentDoc.filename == null))
             {
                 //call get save project filename dialog box
                 SESaveFileDialog.InitialDirectory = Application.StartupPath;

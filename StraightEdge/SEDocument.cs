@@ -22,9 +22,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.IO;
 
 using StraightEdge.Shapes;
 using StraightEdge.Tools;
+using StraightEdge.UI;
 
 namespace StraightEdge
 {
@@ -32,17 +34,18 @@ namespace StraightEdge
     {
         public SEWindow window;
         public SEGraphic graph;
+        public SECanvas canvas;
 
-        public String fileName;
+        public String filename;
 
-        public static SEDocument loadFile(SEWindow window, String filename)
+        public static SEDocument loadFile(SEWindow window, String _filename)
         {
-            //curFileName = filename;
 
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(filename);
+            xmlDoc.Load(_filename);
 
-            SEDocument doc = new SEDocument(window, filename);
+            SEDocument doc = new SEDocument(window, _filename);
+            doc.filename = _filename;
 
             foreach (XmlNode node in xmlDoc.DocumentElement.ChildNodes)
             {
@@ -55,12 +58,14 @@ namespace StraightEdge
             return doc;
         }
 
-        public SEDocument(SEWindow _window, String _filename)
+        public SEDocument(SEWindow _window, String _name)
         {
             window = _window;
-            fileName = _filename;
+            canvas = window.easel.canvas;
 
-            graph = new SEGraphic(window.easel.canvas);
+            filename = _name;
+
+            graph = new SEGraphic(canvas);
         }
 
         public void save()
@@ -70,7 +75,7 @@ namespace StraightEdge
             settings.Indent = true;
             settings.NewLineOnAttributes = true;
 
-            XmlWriter xmlWriter = XmlWriter.Create(fileName, settings);
+            XmlWriter xmlWriter = XmlWriter.Create(filename, settings);
 
             xmlWriter.WriteStartDocument();
             xmlWriter.WriteEndDocument();
@@ -79,7 +84,7 @@ namespace StraightEdge
 
         public void saveAs(String _filename)
         {
-            fileName = _filename;
+            filename = _filename;
             save();
         }
     }

@@ -81,7 +81,7 @@ namespace StraightEdge.UI
         public void setGraphic(SEGraphic _graphic)
         {
             graphic = _graphic;
-            graphic.setPos(0, 0);
+            graphic.setPos(-(cxorg), -(cyorg));
             int minWidth = graphic.gwidth + HORZMARGIN + HORZMARGIN;
             int minHeight = graphic.gheight + VERTMARGIN + VERTMARGIN;
 
@@ -172,7 +172,9 @@ namespace StraightEdge.UI
             base.OnMouseDown(e);
             if (currentTool != null)
             {
-                currentTool.mouseDown(e);
+                Point loc = new Point(e.X, e.Y);
+                loc.Offset(cxorg, cyorg);
+                currentTool.mouseDown(loc);
             }
             isDragging = true;
             Invalidate();
@@ -186,10 +188,12 @@ namespace StraightEdge.UI
             easel.setCursorPos(xpos, ypos);
             if (currentTool != null)
             {
+                Point loc = new Point(e.X, e.Y);
+                loc.Offset(cxorg, cyorg);
                 if (isDragging)
-                    currentTool.mouseDrag(e);
+                    currentTool.mouseDrag(loc);
                 else
-                    currentTool.mouseMove(e);
+                    currentTool.mouseMove(loc);
             }
             Invalidate();
         }
@@ -199,7 +203,9 @@ namespace StraightEdge.UI
             base.OnMouseUp(e);
             if (currentTool != null)
             {
-                currentTool.mouseUp(e);
+                Point loc = new Point(e.X, e.Y);
+                loc.Offset(cxorg, cyorg);
+                currentTool.mouseUp(loc);
             }
             isDragging = false;
             Invalidate();

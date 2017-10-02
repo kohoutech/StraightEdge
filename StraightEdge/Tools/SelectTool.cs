@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing;
 
 using StraightEdge.Shapes;
 using StraightEdge.UI;
@@ -42,27 +43,27 @@ namespace StraightEdge.Tools
             orgY = 0;
         }
 
-        public override void mouseDown(MouseEventArgs e)
+        public override void mouseDown(Point loc)
         {
-            orgX = e.X;
-            orgY = e.Y;
+            orgX = loc.X;
+            orgY = loc.Y;
             SEShape selected = canvas.hitTest(orgX, orgY);
             canvas.setSelection(selected);
         }
 
-        public override void mouseDrag(MouseEventArgs e)
+        public override void mouseDrag(Point loc)
         {
-            int ofsX = e.X - orgX;
-            int ofsY = e.Y - orgY;
+            int ofsX = loc.X - orgX;
+            int ofsY = loc.Y - orgY;
             if (canvas.selectedShape != null)
             {
                 canvas.selectedShape.move(ofsX, ofsY);
             }
-            orgX = e.X;
-            orgY = e.Y;
+            orgX = loc.X;
+            orgY = loc.Y;
         }
 
-        public override void mouseUp(MouseEventArgs e)
+        public override void mouseUp(Point loc)
         {
         }
 

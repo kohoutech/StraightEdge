@@ -23,6 +23,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
 using StraightEdge.Shapes;
 using StraightEdge.UI;
@@ -77,19 +79,19 @@ namespace StraightEdge.Tools
 
 //- event handlers ------------------------------------------------------------
 
-        public virtual void mouseDown(MouseEventArgs e)
+        public virtual void mouseDown(Point loc)
         {
         }
 
-        public virtual void mouseMove(MouseEventArgs e)
+        public virtual void mouseMove(Point loc)
         {
         }
 
-        public virtual void mouseDrag(MouseEventArgs e)
+        public virtual void mouseDrag(Point loc)
         {
         }
 
-        public virtual void mouseUp(MouseEventArgs e)
+        public virtual void mouseUp(Point loc)
         {
         }
 

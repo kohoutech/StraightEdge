@@ -160,10 +160,10 @@ namespace StraightEdge.Tools
 //- mouse handling ------------------------------------------------------------
 
         //start rectangle
-        public override void mouseDown(MouseEventArgs e)
+        public override void mouseDown(Point loc)
         {
-            orgX = e.X;
-            orgY = e.Y;
+            orgX = loc.X;
+            orgY = loc.Y;
             currentRect = new SERectangle(canvas.graphic);
             currentRect.setPos(orgX, orgY);
             currentRect.setPen(window.statusPanel.penColor, window.statusPanel.penWidth);
@@ -175,16 +175,16 @@ namespace StraightEdge.Tools
         //{
         //}
 
-        public override void mouseDrag(MouseEventArgs e)
+        public override void mouseDrag(Point loc)
         {
-            int ofsX = e.X - orgX;
-            int ofsY = e.Y - orgY;
+            int ofsX = loc.X - orgX;
+            int ofsY = loc.Y - orgY;
             currentRect.setWidth(ofsX);
             currentRect.setHeight(ofsY);
         }
 
         //finish rectange
-        public override void mouseUp(MouseEventArgs e)
+        public override void mouseUp(Point loc)
         {
             canvas.setSelection(currentRect);
         }
