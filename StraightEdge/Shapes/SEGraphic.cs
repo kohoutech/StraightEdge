@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Xml;
@@ -36,10 +37,12 @@ namespace StraightEdge.Shapes
         public const int DEFAULTWIDTH = 640;
         public const int DEFAULTHEIGHT = 480;
 
+        public SEWindow window;
         public SECanvas canvas;
         public SEDocument doc;
         public Bitmap bmp;
         public List<SEShape> shapes;
+        public SEShape selectedShape;
 
         public int gxpos;
         public int gypos;
@@ -58,12 +61,16 @@ namespace StraightEdge.Shapes
             : base(null)
         {
             canvas = _canvas;
+            window = canvas.window;
+
             gxpos = 0;
             gypos = 0;
             gwidth = DEFAULTWIDTH;
             gheight = DEFAULTHEIGHT;
+
             bmp = new Bitmap(gwidth, gheight);
             shapes = new List<SEShape>();
+            selectedShape = null;            
         }
 
         public void setPos(int xpos, int ypos)
@@ -71,6 +78,48 @@ namespace StraightEdge.Shapes
             gxpos = xpos;
             gypos = ypos;
         }
+
+//- selection -----------------------------------------------------------------
+
+        //find the shape at this cursor pos
+        public SEShape findShape(int xpos, int ypos)
+        {
+            SEShape result = null;
+            for (int i = shapes.Count - 1; i >= 0; i--)     //reverse through shapes list to hit topmost first, bottommost last
+            {
+                if (shapes[i].hitTest(xpos, ypos))
+                {
+                    result = shapes[i];
+                    break;
+                }
+            }
+            return result;
+        }
+
+        public void setSelection(SEShape shape)
+        {
+            if (selectedShape != null)
+            {
+                selectedShape.selected = false;
+            }
+            selectedShape = shape;                //select current shape (or no selection)
+            if (shape != null)
+            {
+                shape.selected = true;
+                //window.setControlPanel(shape.tool.controlPanel);      //set control panel to shape's type's controls
+                //shape.tool.setCurrentShape(shape);                          //and link control strip to THIS shape
+                canvas.currentTool.setCurrentShape(shape);                          //and link control strip to THIS shape
+
+                canvas.Cursor = Cursors.SizeAll;            //this may need to be set by the selected shape, for now we're dragging
+            }
+            else
+            {
+                window.setControlPanel(null);
+                canvas.Cursor = Cursors.Arrow;
+            }
+        }
+
+//- rendering -----------------------------------------------------------------
 
         public override void render(Graphics g)
         {
@@ -84,12 +133,12 @@ namespace StraightEdge.Shapes
 
             //now, draw completed bitmap to canvas at cur pos
             g.DrawImage(bmp, gxpos, gypos);
-            g.DrawRectangle(Pens.Black, gxpos, gypos, bmp.Width, bmp.Height);
+            g.DrawRectangle(Pens.Black, gxpos, gypos, bmp.Width, bmp.Height);       //outline graphic
         }
 
 //- loading & saving ----------------------------------------------------------
 
-        public override SEShape loadShape(XmlNode shapeRoot, SEShape parent)
+        public SEGraphic loadShapes(XmlNode shapeRoot)
         {
             foreach (XmlNode shapenode in shapeRoot.ChildNodes)
             {
@@ -103,14 +152,14 @@ namespace StraightEdge.Shapes
             return this;
         }
 
-        public override void save(XmlWriter xmlWriter)
+        public void saveShapes(XmlWriter xmlWriter)
         {
             xmlWriter.WriteStartElement("shapes");
 
             foreach (SEShape shape in shapes)
             {
                 xmlWriter.WriteStartElement(shape.xmlShapeName);
-                shape.save(xmlWriter);
+                shape.saveShape(xmlWriter);
                 xmlWriter.WriteEndElement();
             }
 

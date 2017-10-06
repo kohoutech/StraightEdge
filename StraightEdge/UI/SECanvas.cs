@@ -39,15 +39,15 @@ namespace StraightEdge.UI
         public SEWindow window;
         public SEGraphic graphic;
 
-        public SEShape selectedShape;
         public SETool currentTool;
 
+        public int minWidth;
+        public int minHeight;
         int startx;
         int starty;
         int cxorg;
         int cyorg;
-        public int minWidth;
-        public int minHeight;
+
         bool isDragging;
 
         public SECanvas(SEEasel _easel)
@@ -63,7 +63,7 @@ namespace StraightEdge.UI
 
             InitializeComponent();
 
-            setGraphic(new SEGraphic(this));
+            setGraphic(new SEGraphic(this));            //init blank graphic
         }
 
         private void InitializeComponent()
@@ -85,10 +85,15 @@ namespace StraightEdge.UI
             int minWidth = graphic.gwidth + HORZMARGIN + HORZMARGIN;
             int minHeight = graphic.gheight + VERTMARGIN + VERTMARGIN;
 
-            selectedShape = null;
             currentTool = null;
             isDragging = false;
             Invalidate();
+        }
+
+        public void setCurrentTool(SETool tool)
+        {
+            currentTool = tool;
+            window.setControlPanel(tool.controlPanel);
         }
 
 //- positioning ---------------------------------------------------------------
@@ -117,55 +122,7 @@ namespace StraightEdge.UI
             Invalidate();
         }
 
-//-----------------------------------------------------------------------------
-
-        public void setCurrentTool(SETool tool)
-        {
-            currentTool = tool;
-            ToolStrip controlPanel = window.controlPanel();
-            controlPanel.Items.Clear();
-            controlPanel.Items.AddRange(tool.controlPanel.ToArray());       //put this tool's controls on control panel
-        }
-
-        //find the shape at this cursor pos
-        public SEShape hitTest(int xpos, int ypos)
-        {
-            SEShape result = null;
-            for (int i = graphic.shapes.Count - 1; i >= 0; i--)     //reverse through shapes list to hit topmost first, bottommost last
-            {
-                if (graphic.shapes[i].hitTest(xpos, ypos))
-                {
-                    result = graphic.shapes[i];
-                    break;
-                }
-            }
-            return result;
-        }
-
-        public void setSelection(SEShape shape)
-        {
-            if (selectedShape != null)
-            {
-                //selectedShape.selected = false;      //deselect any prev shape
-            }
-            selectedShape = shape;                //select current shape (or no selection)
-            if (shape != null)
-            {
-                //shape.selected = true;                                      //let shape know its selected
-                //window.controlPanel.setControlStrip(shape.tool.strip);      //set control panel to shape's type's controls
-                shape.tool.setCurrentShape(shape);                          //and link control strip to THIS shape
-
-                this.Cursor = Cursors.SizeAll;            //this may need to be set by the selected shape, for now we're dragging
-            }
-            else
-            {
-                //window.controlPanel.setControlStrip(null);
-                this.Cursor = Cursors.Arrow;
-            }
-        }
-
 //- mouse events --------------------------------------------------------------
-
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -211,6 +168,11 @@ namespace StraightEdge.UI
             Invalidate();
         }
 
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+        }
+
         protected override void  OnMouseLeave(EventArgs e)
         {
  	        base.OnMouseLeave(e);
@@ -224,10 +186,10 @@ namespace StraightEdge.UI
             base.OnKeyDown(e);
             if (e.KeyCode == Keys.Delete)
             {
-                if (selectedShape != null)
-                {
-                    graphic.shapes.Remove(selectedShape);
-                }
+                //if (selectedShape != null)
+                //{
+                //    graphic.shapes.Remove(selectedShape);
+                //}
             }
             Invalidate();
         }

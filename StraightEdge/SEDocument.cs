@@ -51,7 +51,7 @@ namespace StraightEdge
             {
                 if (node.Name.Equals("shapes"))             //only child type we have for now, there may be more
                 {
-                    doc.graph.loadShape(node, null);
+                    doc.graph.loadShapes(node);
                 }
             }
 

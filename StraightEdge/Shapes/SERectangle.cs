@@ -30,35 +30,20 @@ namespace StraightEdge.Shapes
 {
     public class SERectangle : SEShape
     {
-        public float width;
-        public float height;
         public float rx;
         public float ry;
 
-        public SERectangle(SEShape parent)
+        public SERectangle(SEGraphic parent)
             : base(parent)
         {
             xmlShapeName = "rectangle";
             tool = (RectangleTool)SETool.getShapeTool("rectangle");
-            width = 0;
-            height = 0;
-            rx = 0;
-            ry = 0;
-        }
-
-        public void setWidth(float _width) 
-        {
-            width = _width;
+            rx = 0.0f;
+            ry = 0.0f;
             update();
         }
 
-        public void setHeight(float _height)
-        {
-            height = _height;
-            update();
-        }
-
-        public void update()
+        public override void update()
         {
             path.Reset();
             path.AddLine(xpos, ypos, xpos + width, ypos);
@@ -67,14 +52,9 @@ namespace StraightEdge.Shapes
             path.CloseFigure();
         }
 
-        public override bool hitTest(int xpos, int ypos)
-        {
-            return false;
-        }
+//- loading / saving ----------------------------------------------------------
 
-//- loading /saving -----------------------------------------------------------
-
-        public override SEShape loadShape(XmlNode node, SEShape parent)
+        public override SEShape loadShape(XmlNode node, SEGraphic parent)
         {
             SERectangle rect = new SERectangle(parent);
             rect.loadAttributes(node);
@@ -89,9 +69,9 @@ namespace StraightEdge.Shapes
             update();
         }
 
-        public override void save(XmlWriter xmlWriter)
+        public override void saveShape(XmlWriter xmlWriter)
         {
-            base.save(xmlWriter);
+            base.saveShape(xmlWriter);
             xmlWriter.WriteAttributeString("width", width.ToString());
             xmlWriter.WriteAttributeString("height", height.ToString());
         }

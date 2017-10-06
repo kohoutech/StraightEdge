@@ -37,10 +37,8 @@ namespace StraightEdge.Tools
         int orgY;
 
         //control panel
-        ToolStripTextBox txtX;
-        ToolStripTextBox txtY;
-        ToolStripTextBox txtW;
-        ToolStripTextBox txtH;
+        ToolStripTextBox txtRX;
+        ToolStripTextBox txtRY;
         bool updatingPanel;
 
         static bool registered = false;
@@ -59,7 +57,7 @@ namespace StraightEdge.Tools
             buttonIcon = "toolboxrect";
             tooltip = "draw squares and rectangles";
 
-            buildControlStrip();
+            buildControlPanel();
             updatingPanel = false;
         }
 
@@ -69,105 +67,64 @@ namespace StraightEdge.Tools
             updateControlPanel();
         }
 
-//- control strip -------------------------------------------------------------
+//- control panel -------------------------------------------------------------
 
-        public void buildControlStrip()
+        public void buildControlPanel()
         {
-            ToolStripLabel lblX = new ToolStripLabel("X: ");
-            controlPanel.Add(lblX);
-            txtX = new ToolStripTextBox();
-            txtX.BorderStyle = BorderStyle.FixedSingle;
-            txtX.Leave += new EventHandler(xposTextBox_Leave);
-            controlPanel.Add(txtX);
-            ToolStripLabel lblY = new ToolStripLabel("Y: ");
-            controlPanel.Add(lblY);
-            txtY = new ToolStripTextBox();
-            txtY.BorderStyle = BorderStyle.FixedSingle;
-            txtY.Leave += new EventHandler(yposTextBox_Leave);
-            controlPanel.Add(txtY);
-            
-            ToolStripLabel lblW = new ToolStripLabel("W: ");
-            controlPanel.Add(lblW);            
-            txtW = new ToolStripTextBox();
-            txtW.BorderStyle = BorderStyle.FixedSingle;
-            txtW.Leave += new EventHandler(widthTextBox_Leave);
-            controlPanel.Add(txtW);
-            ToolStripLabel lblH = new ToolStripLabel("H: ");
-            controlPanel.Add(lblH);
-            txtH = new ToolStripTextBox();
-            txtH.BorderStyle = BorderStyle.FixedSingle;
-            txtH.Leave += new EventHandler(heightTextBox_Leave);
-            controlPanel.Add(txtH);
-
             ToolStripLabel lblRX = new ToolStripLabel("RX: ");
             controlPanel.Add(lblRX);            
-            ToolStripTextBox txtRX = new ToolStripTextBox();
+            txtRX = new ToolStripTextBox();
             txtRX.BorderStyle = BorderStyle.FixedSingle;
+            txtRX.Leave += new EventHandler(rxTextBox_Leave);
             controlPanel.Add(txtRX);
             ToolStripLabel lblRY = new ToolStripLabel("RY: ");
             controlPanel.Add(lblRY);
-            ToolStripTextBox txtRY = new ToolStripTextBox();
+            txtRY = new ToolStripTextBox();
             txtRY.BorderStyle = BorderStyle.FixedSingle;
+            txtRY.Leave += new EventHandler(ryTextBox_Leave);
             controlPanel.Add(txtRY);
         }
 
-        private void xposTextBox_Leave(object sender, EventArgs e)
+        private void rxTextBox_Leave(object sender, EventArgs e)
         {
             if (!updatingPanel)
             {
-                currentRect.setPos(Single.Parse(txtX.Text), currentRect.ypos);
+                //currentRect.setPos(Single.Parse(txtX.Text), currentRect.ypos);
                 canvas.Invalidate();
             }
         }
 
-        private void yposTextBox_Leave(object sender, EventArgs e)
+        private void ryTextBox_Leave(object sender, EventArgs e)
         {
             if (!updatingPanel)
             {
-                currentRect.setPos(currentRect.xpos, Single.Parse(txtY.Text));
+                //currentRect.setPos(currentRect.xpos, Single.Parse(txtY.Text));
                 canvas.Invalidate();
             }
         }
 
-        private void widthTextBox_Leave(object sender, EventArgs e)
-        {
-            if (!updatingPanel)
-            {
-                currentRect.setWidth(Single.Parse(txtW.Text));
-                canvas.Invalidate();
-            }
-        }
-
-        private void heightTextBox_Leave(object sender, EventArgs e)
-        {
-            if (!updatingPanel)
-            {
-                currentRect.setHeight(Single.Parse(txtH.Text));
-                canvas.Invalidate();
-            }
-        }
 
         public override void updateControlPanel()
         {
             updatingPanel = true;
-            txtX.Text = currentRect.xpos.ToString();
-            txtY.Text = currentRect.ypos.ToString();
-            txtW.Text = currentRect.width.ToString();
-            txtH.Text = currentRect.height.ToString();
+            txtRX.Text = currentRect.rx.ToString();
+            txtRY.Text = currentRect.ry.ToString();
             updatingPanel = false;            
         }
 
 //- mouse handling ------------------------------------------------------------
 
-        //start rectangle
+        //start drag
         public override void mouseDown(Point loc)
         {
             orgX = loc.X;
             orgY = loc.Y;
             currentRect = new SERectangle(canvas.graphic);
-            currentRect.setPos(orgX, orgY);
-            currentRect.setPen(window.statusPanel.penColor, window.statusPanel.penWidth);
-            currentRect.setBrush(window.statusPanel.brushColor);
+            currentRect.setLeft(orgX);
+            currentRect.setTop(orgY);
+            currentRect.setPenColor(window.canvasPanel.penColor);
+            currentRect.setPenWidth(window.canvasPanel.penWidth);
+            currentRect.setBrushColor(window.canvasPanel.brushColor);
             canvas.graphic.shapes.Add(currentRect);
         }
 
@@ -179,15 +136,17 @@ namespace StraightEdge.Tools
         {
             int ofsX = loc.X - orgX;
             int ofsY = loc.Y - orgY;
-            currentRect.setWidth(ofsX);
-            currentRect.setHeight(ofsY);
+            if (currentRect != null)
+            {
+                currentRect.setWidth(ofsX);
+                currentRect.setHeight(ofsY);
+            }
         }
 
         //finish rectange
         public override void mouseUp(Point loc)
         {
-            canvas.setSelection(currentRect);
+            //graphic.setSelection(currentRect);
         }
-
     }
 }

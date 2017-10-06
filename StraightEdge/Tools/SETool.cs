@@ -43,6 +43,7 @@ namespace StraightEdge.Tools
 
         //control panel
         public List<ToolStripItem> controlPanel;
+        
 
 //- tool registry -------------------------------------------------------------
 
@@ -66,7 +67,7 @@ namespace StraightEdge.Tools
             canvas = window.easel.canvas;
             buttonIcon = "none";
             tooltip = "none";
-            controlPanel = new List<ToolStripItem>();
+            controlPanel = new List<ToolStripItem>();            
         }
 
         public virtual void setCurrentShape(SEShape shape) 

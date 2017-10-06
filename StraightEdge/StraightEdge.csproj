@@ -86,7 +86,7 @@
     <Compile Include="UI\SEEasel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\SEStatusPanel.cs">
+    <Compile Include="UI\SECanvasPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Widgets\ControlStrip.cs">
@@ -129,8 +129,8 @@
     <EmbeddedResource Include="UI\SEControlPanel.resx">
       <DependentUpon>SEControlPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\SEStatusPanel.resx">
-      <DependentUpon>SEStatusPanel.cs</DependentUpon>
+    <EmbeddedResource Include="UI\SECanvasPanel.resx">
+      <DependentUpon>SECanvasPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Widgets\ControlStrip.resx">
       <DependentUpon>ControlStrip.cs</DependentUpon>

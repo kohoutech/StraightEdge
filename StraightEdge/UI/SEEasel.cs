@@ -201,14 +201,14 @@ namespace StraightEdge.UI
         {
             cursorX = x;
             cursorY = y;
-            window.statusPanel.setCursorPos(cursorX, cursorY);
+            window.canvasPanel.setCursorPos(cursorX, cursorY);
             horzRuler.setCursorPos(cursorX);
             vertRuler.setCursorPos(cursorY);
         }
 
         public void clearCursorPos()
         {
-            window.statusPanel.clearCursorPos();
+            window.canvasPanel.clearCursorPos();
         }
 
     }

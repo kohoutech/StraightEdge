@@ -56,8 +56,8 @@ namespace StraightEdge.UI
             tools.Add(new EllipseTool(window));
             tools.Add(new PolygonTool(window));
             tools.Add(new LineTool(window));
-            tools.Add(new PathTool(window));
             tools.Add(new CurveTool(window));
+            tools.Add(new PathTool(window));
             tools.Add(new TextTool(window));
             tools.Add(new ImageTool(window));
 

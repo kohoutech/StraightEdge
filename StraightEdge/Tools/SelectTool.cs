@@ -31,33 +31,135 @@ namespace StraightEdge.Tools
 {
     class SelectTool : SETool
     {
-        int orgX;
+        SEShape selectedShape;
+        int orgX;       //init mouse pos for calc dragging offset
         int orgY;
+
+        //control panel
+        ToolStripTextBox txtX;
+        ToolStripTextBox txtY;
+        ToolStripTextBox txtW;
+        ToolStripTextBox txtH;
+        bool updatingPanel;
 
         public SelectTool(SEWindow window)
             : base(window)
         {
+            selectedShape = null;
+
             buttonIcon = "toolboxpointer";
             tooltip = "select and group elements";
+
             orgX = 0;
             orgY = 0;
+
+            buildControlPanel();
+            updatingPanel = false;
+
         }
+
+        public override void setCurrentShape(SEShape shape)
+        {
+            selectedShape = (SERectangle)shape;
+            updateControlPanel();
+        }
+
+
+//- control panel -------------------------------------------------------------
+
+        public void buildControlPanel()
+        {
+            ToolStripLabel lblX = new ToolStripLabel("X: ");
+            controlPanel.Add(lblX);
+            txtX = new ToolStripTextBox();
+            txtX.BorderStyle = BorderStyle.FixedSingle;
+            txtX.Leave += new EventHandler(xposTextBox_Leave);
+            controlPanel.Add(txtX);
+            ToolStripLabel lblY = new ToolStripLabel("Y: ");
+            controlPanel.Add(lblY);
+            txtY = new ToolStripTextBox();
+            txtY.BorderStyle = BorderStyle.FixedSingle;
+            txtY.Leave += new EventHandler(yposTextBox_Leave);
+            controlPanel.Add(txtY);
+
+            ToolStripLabel lblW = new ToolStripLabel("W: ");
+            controlPanel.Add(lblW);
+            txtW = new ToolStripTextBox();
+            txtW.BorderStyle = BorderStyle.FixedSingle;
+            txtW.Leave += new EventHandler(widthTextBox_Leave);
+            controlPanel.Add(txtW);
+            ToolStripLabel lblH = new ToolStripLabel("H: ");
+            controlPanel.Add(lblH);
+            txtH = new ToolStripTextBox();
+            txtH.BorderStyle = BorderStyle.FixedSingle;
+            txtH.Leave += new EventHandler(heightTextBox_Leave);
+            controlPanel.Add(txtH);
+        }
+
+        private void xposTextBox_Leave(object sender, EventArgs e)
+        {
+            if (!updatingPanel)
+            {
+                selectedShape.setLeft(Single.Parse(txtX.Text));
+                canvas.Invalidate();
+            }
+        }
+
+        private void yposTextBox_Leave(object sender, EventArgs e)
+        {
+            if (!updatingPanel)
+            {
+                selectedShape.setTop(Single.Parse(txtY.Text));
+                canvas.Invalidate();
+            }
+        }
+
+        private void widthTextBox_Leave(object sender, EventArgs e)
+        {
+            if (!updatingPanel)
+            {
+                selectedShape.setWidth(Single.Parse(txtW.Text));
+                canvas.Invalidate();
+            }
+        }
+
+        private void heightTextBox_Leave(object sender, EventArgs e)
+        {
+            if (!updatingPanel)
+            {
+                selectedShape.setHeight(Single.Parse(txtH.Text));
+                canvas.Invalidate();
+            }
+        }
+
+        public override void updateControlPanel()
+        {
+            updatingPanel = true;
+            txtX.Text = selectedShape.xpos.ToString();
+            txtY.Text = selectedShape.ypos.ToString();
+            txtW.Text = selectedShape.width.ToString();
+            txtH.Text = selectedShape.height.ToString();
+            updatingPanel = false;
+        }
+
+//- mouse handling ------------------------------------------------------------
 
         public override void mouseDown(Point loc)
         {
             orgX = loc.X;
             orgY = loc.Y;
-            SEShape selected = canvas.hitTest(orgX, orgY);
-            canvas.setSelection(selected);
+            SEShape selected = canvas.graphic.findShape(orgX, orgY);
+            canvas.graphic.setSelection(selected);
         }
 
         public override void mouseDrag(Point loc)
         {
             int ofsX = loc.X - orgX;
             int ofsY = loc.Y - orgY;
-            if (canvas.selectedShape != null)
+            if (selectedShape != null)
             {
-                canvas.selectedShape.move(ofsX, ofsY);
+                selectedShape.setLeft(selectedShape.xpos + ofsX);
+                selectedShape.setTop(selectedShape.ypos + ofsY);
             }
             orgX = loc.X;
             orgY = loc.Y;

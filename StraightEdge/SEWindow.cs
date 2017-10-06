@@ -37,7 +37,7 @@ namespace StraightEdge
     {
         public SEEasel easel;
         public SEToolBox toolbox;
-        public SECanvasPanel statusPanel;
+        public SECanvasPanel canvasPanel;
         public ToolTip SEToolTip;
 
         public SEDocument currentDoc;
@@ -52,12 +52,12 @@ namespace StraightEdge
             toolbox = new SEToolBox(this);
             toolbox.Dock = DockStyle.Left;
             
-            statusPanel = new SECanvasPanel(this);
-            statusPanel.Dock = DockStyle.Bottom;
+            canvasPanel = new SECanvasPanel(this);
+            canvasPanel.Dock = DockStyle.Bottom;
 
             this.Controls.Add(easel);
             this.Controls.Add(toolbox);
-            this.Controls.Add(statusPanel);
+            this.Controls.Add(canvasPanel);
 
             InitializeComponent();
 
@@ -75,9 +75,18 @@ namespace StraightEdge
             Text = "StraightEdge [" + name + "]";
         }
 
-        public ToolStrip controlPanel()
+        //public ToolStrip controlPanel()
+        //{
+        //    return SEControlPanel;
+        //}
+
+        public void setControlPanel(List<ToolStripItem> controlPanel)
         {
-            return SEControlPanel;
+            SEControlPanel.Items.Clear();
+            if (controlPanel != null)
+            {
+                SEControlPanel.Items.AddRange(controlPanel.ToArray());       //put this tool's controls on control panel
+            }
         }
 
 //-----------------------------------------------------------------------------
